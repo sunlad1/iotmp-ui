@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>preview_demo</title>
+</head>
+
+
+<body>
+   
+    <!--视频窗口展示-->
+    <div id="playWnd" class="playWnd" style="border-left-width:1000px;"></div>
+</body>
+
+    <!--三个必要的js文件引入-->
+<script src="jquery-1.12.4.min.js"></script>
+<script src="jsencrypt.min.js"></script>            <!-- 用于RSA加密 -->
+<script src="jsWebControl-1.0.0.min.js"></script>   <!-- 用于前端与插件交互 -->
+
+<script type="text/javascript">
+
+    
+
+    //声明公用变量
+    var initCount = 0;
+    var pubKey = '';
+
+    // 创建播放实例
+    var oWebControl = new WebControl({
+      szPluginContainer: "playWnd",                       // 指定容器id
+			iServicePortStart: 15900,                           // 指定起止端口号，建议使用该值
+			iServicePortEnd: 15909,                             
+			szClassId:"23BF3B0A-2C56-4D97-9C03-0CB103AA8F11",   // 用于IE10使用ActiveX的clsid
+			cbConnectSuccess: function () {                     // 创建WebControl实例成功											
+				oWebControl.JS_StartService("window", {         // WebControl实例创建成功后需要启动服务
+					dllPath: "./VideoPluginConnect.dll"         // 值"./VideoPluginConnect.dll"写死 
+				}).then(function () {                           // 启动插件服务成功
+					oWebControl.JS_SetWindowControlCallback({   // 设置消息回调
+						cbIntegrationCallBack: cbIntegrationCallBack
+					});
+					
+					oWebControl.JS_CreateWnd("playWnd", 1000, 600).then(function () { //JS_CreateWnd创建视频播放窗口，宽高可设定
+						  // 创建播放实例成功后初始化
+					});
+				}, function () { // 启动插件服务失败
+				});
+			},
+			cbConnectError: function () { // 创建WebControl实例失败
+				oWebControl = null;
+				$("#playWnd").html("插件未启动，正在尝试启动，请稍候...");
+				WebControl.JS_WakeUp("VideoWebPlugin://"); // 程序未启动时执行error函数，采用wakeup来启动程序
+				initCount ++;
+				if (initCount < 3) {                             
+					setTimeout(function () {
+						initPlugin();
+					}, 3000)
+				} else {
+					$("#playWnd").html("插件启动失败，请检查插件是否安装！");
+				}
+			},
+			cbConnectClose: function (bNormalClose) {            
+				// 异常断开：bNormalClose = false
+				// JS_Disconnect正常断开：bNormalClose = true	
+				console.log("cbConnectClose");
+				oWebControl = null;
+			}
+		});
+
+	// 设置窗口控制回调
+    function setCallbacks() {
+        oWebControl.JS_SetWindowControlCallback({
+            cbIntegrationCallBack: cbIntegrationCallBack
+        });
+    }
+
+    // 推送消息
+    function cbIntegrationCallBack(oData) {
+        showCBInfo(JSON.stringify(oData.responseMsg));
+    }
+		
+		var appkey = "21349144"; //平台提供的 appkey，必填
+// "DuyWn2H7Qb7jB9rPArth"为平台提供的 secret，必填
+		var secret = setEncrypt("DuyWn2H7Qb7jB9rPArth"); // 对 secret 进行 RSA 公钥加密
+		var ip = "10.19.132.75"; //平台 IP 地址，必填
+		var playMode = 0; // 初始播放模式： 0-预览， 1-回放，必填
+		var port = 443; //平台端口，若启用 HTTPS 协议，默认 443，必填
+		var snapDir = "D:\\SnapDir"; // 抓图存储路径，选填
+		var videoDir = "D:\\VideoDir"; // 紧急录像或录像剪辑存储路径，选填
+		var layout = "1x1"; // playMode 指定模式的布局，选填
+		var enableHTTPS = 1; //是否启用 HTTPS 协议与平台交互，是为 1，否为 0，选填
+		var encryptedFields = 'secret'; //加密字段， 形如'字段 1,...,字段 n'，选填
+		oWebControl.JS_RequestInterface({
+			funcName: "init",
+			argument: JSON.stringify({
+			appkey: appkey,
+			secret: secret,
+			ip: ip,
+			playMode: playMode,
+			port: port,
+			snapDir: snapDir,
+			videoDir: videoDir,
+			layout: layout,
+			enableHTTPS: enableHTTPS,
+			encryptedFields: encryptedFields
+			})
+		});
+	
+
+    //获取公钥
+    function getPubKey (callback) {
+        oWebControl.JS_RequestInterface({
+            funcName: "getRSAPubKey",
+            argument: JSON.stringify({
+                keyLength: 1024
+            })
+        }).then(function (oData) {
+            console.log(oData);
+            if (oData.responseMsg.data) {
+                pubKey = oData.responseMsg.data;
+                callback()
+            }
+        })
+    }
+
+    //RSA加密
+    function setEncrypt (value) {
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(pubKey);
+        return encrypt.encrypt(value);
+    }
+	
+	
+
+    /* // 标签关闭
+    $(window).unload(function () {
+        if (oWebControl != null){
+			oWebControl.JS_HideWnd();   // 先让窗口隐藏，规避可能的插件窗口滞后于浏览器消失问题 
+            oWebControl.JS_Disconnect().then(function(){  // 断开与插件服务连接成功
+			}, 
+			function() {  // 断开与插件服务连接失败
+			});
+        }
+    }); */
+
+</script>
+ </html>
