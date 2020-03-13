@@ -16,10 +16,19 @@
       </div>
       <div class="header-right"></div>
     </div>
-    <div class="content">
-      <div class="top">
-        <div class="left"></div>
-        <div class="right"><VideoSurveillance/></div>
+    <div class="insideWarper">
+      <div class="showContainer">
+        <div class="content">
+          <div class="top">
+            <div class="left">
+              <leftCom></leftCom>
+            </div>
+            <div class="right"><VideoSurveillance/></div>
+          </div>
+        </div>
+        <div class="equipmentManage">
+          <equipmentManage></equipmentManage>
+        </div>
       </div>
     </div>
   </div>
@@ -27,10 +36,16 @@
 
 <script>
   import VideoSurveillance from '@/components/videoSurveillance';
+  import leftCom from './homeComponents/leftCom';
+  import equipmentManage from './homeComponents/equipmentManage';
 
   export default {
     name: 'Home',
-    components: {VideoSurveillance},
+    components: {
+      VideoSurveillance,
+      leftCom,
+      equipmentManage
+    },
     data() {
       return {
         routeData: [],
@@ -48,7 +63,7 @@
     methods: {}
   };
 </script>
-<style lang="less" scoped>
+<style lang="less">
   .Home {
     display: flex;
     flex-direction: column;
@@ -56,7 +71,37 @@
     height: 100vh;
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
-
+    table{
+      width: auto !important;
+      td{
+        div{
+          white-space: nowrap;
+          font-size: .09rem !important;
+          span{
+            font-size: .09rem !important;
+          }
+        }
+      }
+      th{
+        div{
+          white-space: nowrap;
+          font-size: .09rem !important;
+          span{
+            font-size: .09rem !important;
+          }
+        }
+      }
+    }
+    .showContainer{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .insideWarper{
+      height: 100%;
+      width: 100vw;
+      padding: .23rem;
+    }
     .header {
       display: flex;
       justify-content: space-between;
@@ -97,26 +142,24 @@
 
       }
     }
-
+    .equipmentManage{
+      flex: 9;
+    }
     .content {
-      width: 1650px;
+      width: 100vw;
       margin: 0 auto;
-      margin-top: 37px;
-
+      flex: 13;
       .top {
         display: flex;
         justify-content: space-between;
         width: 100%;
-        height: 510px;
-
         .left {
-          width: 561px;
           height: 100%;
+          flex:1.5;
         }
-
         .right {
-          width: 1182px;
           height: 100%;
+          flex:3;
         }
       }
     }

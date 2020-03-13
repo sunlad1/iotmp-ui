@@ -189,7 +189,8 @@ export default {
   width: 100%;
   height: 100%;
   background: url("./../assets/images/surveillance.png") center center no-repeat;
-  background-size: contain;
+  // background-size: contain;
+  background-size: 100% 100%;
 
   .header {
     display: flex;
