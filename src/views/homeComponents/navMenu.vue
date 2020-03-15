@@ -10,7 +10,54 @@
     text-color="#0099cc"
     active-text-color="#00ffde">
 
-    <el-submenu :index="index" v-for="(item,index) in menuList" :key="index">
+
+
+
+
+<label v-for="(item,index) in menuList" :key="index">
+      <el-submenu :index="String(index)" v-if="item.childPartition && item.childPartition.length > 0">
+        <template slot="title">
+          <span>{{ item.partitionName }}</span>
+        </template>
+
+        <label v-for="(el,i) in item.childPartition" :key="i">
+
+          <el-submenu :index="String(index)+'-'+String(i)" v-if="el.childPartition && el.childPartition.length > 0">
+            <template slot="title">{{ el.partitionName }}</template>
+            <el-menu-item :index="String(index) +'-'+String(i)+'-'+String(I)" @click="changePartition(v)" v-for="(v,I) in el.childPartition" :key="I">{{ v.partitionName }}</el-menu-item>
+          </el-submenu>
+
+          <el-menu-item-group v-else>
+            <el-menu-item :index="String(index)+'-'+String(i)" @click="changePartition(el)">{{ el.partitionName }}</el-menu-item>
+          </el-menu-item-group>
+
+
+        </label>
+
+
+      </el-submenu>
+
+      <el-menu-item :index="String(index)" v-else @click="changePartition(item)">
+        <span slot="title">{{ item.partitionName }}</span>
+      </el-menu-item>
+
+</label>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <el-submenu :index="index" v-for="(item,index) in menuList" :key="index">
       <template slot="title">
         <span @click="changePartition(item)">{{ item.partitionName }}</span>
       </template>
@@ -21,6 +68,27 @@
         </el-submenu>
       </div>
     </el-submenu>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   </el-menu>
@@ -56,6 +124,7 @@ import { getPartitionList } from '@/api/home'
     },
     methods: {
       changePartition(obj){
+        console.log(obj);
         if(obj.id){
           console.log('obj.id');
           console.log(obj.id);
@@ -75,7 +144,8 @@ import { getPartitionList } from '@/api/home'
   }
 </script>
 <style lang="less">
-.el-submenu .el-menu-item:hover{
+
+.el-menu-item:hover{
   background: rgba(0, 153, 204, .4);
 }
 .el-submenu__title:hover{
@@ -95,10 +165,13 @@ import { getPartitionList } from '@/api/home'
   height: 100vh;
   background: rgba(0,0,0, .5);
   border-right: 1px solid #6666cc;
-
+  overflow: hidden;
  }
 .positionLeft{
   left: 0 !important;
+}
+.el-menu-item.is-active {
+  background: rgba(0, 153, 204, .4) !important;
 }
 .navMenu{
   width: 200px;

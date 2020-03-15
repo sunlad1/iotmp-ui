@@ -107,9 +107,15 @@
     background: transparent !important;
   }
 
-
-
-
+.el-table__row:hover{
+  background: rgba(0, 153, 204, .4) !important;
+}
+.el-table__row:active{
+  background: rgba(0, 153, 204, .4);
+}
+.el-table tbody tr:hover>td { 
+  background: rgba(0, 153, 204, .4) !important;
+}
     
     table{
       width: auto !important;
