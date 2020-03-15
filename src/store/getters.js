@@ -1,0 +1,1 @@
+export const partitionId = state => state.home.partitionId

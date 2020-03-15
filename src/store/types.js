@@ -1,0 +1,1 @@
+export const SET_PARTITIONID = 'SET_PARTITIONID'  //partitionId

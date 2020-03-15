@@ -1,5 +1,6 @@
 <template>
   <div class="Home">
+    <navMenu></navMenu>
     <div class="header">
       <div class="header-left">
         <div class="logon">智慧管廊运维平台</div>
@@ -38,13 +39,15 @@
   import VideoSurveillance from '@/components/videoSurveillance';
   import leftCom from './homeComponents/leftCom';
   import equipmentManage from './homeComponents/equipmentManage';
+  import navMenu from './homeComponents/navMenu';
 
   export default {
     name: 'Home',
     components: {
       VideoSurveillance,
       leftCom,
-      equipmentManage
+      equipmentManage,
+      navMenu
     },
     data() {
       return {
@@ -151,6 +154,7 @@
       height: 100px;
       background: rgba(0, 0, 0, .5);
       border-bottom: solid 1px #003399;
+      z-index: 10000;
 
       .header-left {
         display: flex;

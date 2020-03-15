@@ -41,21 +41,47 @@
 <script>
 import { getOperateDeviceTypes } from '@/api/home'
 import { websoketURL } from '@/config/env'
+import { mapGetters } from 'vuex'
 
 export default {
   data(){
     return {
       tableData: [],
-      typeList:[]
+      typeList:[],
+      wsArr: []
+    }
+  },
+  computed:{
+    ...mapGetters(['partitionId'])
+  },
+  watch:{
+    'partitionId': function() {
+      this.initList()
     }
   },
   methods:{
+    initList(){
+      if(this.partitionId) {
+        this.typeList.map((el,index) => {
+          let obj = {
+            deviceTypeId: el.id
+          }
+          this.$set(this.tableData, index, [])
+          this.WebSocketFun(obj,index)
+        })
+      }
+    },
     WebSocketFun(obj,index){
-      let partitionId = obj.partitionId
       let deviceTypeId = obj.deviceTypeId
-      var ws = new WebSocket(`ws://${websoketURL}/ws/deviceList?deviceTypeId=${deviceTypeId}&partitionId=${partitionId}`)
+      if(this.wsArr[index]){
+        this.wsArr[index].onclose = function()
+        { 
+          console.log('关闭 ws');
+        };
+      }
 
-      ws.onmessage = (res) => {
+      this.wsArr[index] = new WebSocket(`ws://${websoketURL}/ws/deviceList?deviceTypeId=${deviceTypeId}&partitionId=${this.partitionId}`)
+      this.wsArr[index].onmessage = (res) => {
         if(!this.tableData[index]){
           this.$set(this.tableData, index, [])
         }
@@ -63,19 +89,10 @@ export default {
       }
     }
   },
-  created(){
-
-    getOperateDeviceTypes().then(res => {
-      this.typeList = res.data
-
-      res.data.map((el,index) => {
-        let obj = {
-          partitionId: 2,
-          deviceTypeId: el.id
-        }
-        this.WebSocketFun(obj,index)
-      })
-    })
+  async created(){
+    let arr = await getOperateDeviceTypes()
+    this.typeList = arr.data
+    this.initList()
   }
 }
 </script>

@@ -75,46 +75,82 @@
 </template>
 
 <script>
-import { getPartitionList } from '@/api/home'
 import { websoketURL } from '@/config/env'
+import { mapGetters } from 'vuex'
 
 export default {
   data(){
     return {
       alarmList: [],
       meterList: {},
-      meterLevelObj:{}
+      meterLevelObj:{},
+      wsArr: []
+    }
+  },
+  computed:{
+    ...mapGetters(['partitionId'])
+  },
+  watch:{
+    'partitionId': function() {
+      this.alarmList = []
+      this.meterList = []
+      this.meterLevelObj = {}
+      this.setAlarmList()
+      this.setMeterData()
+      this.setMeterLevelObj()
     }
   },
   methods:{
-    setAlarmList(partitionId){
-      var ws = new WebSocket(`ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${partitionId}`)
-      ws.onmessage = (res) => {
+    setAlarmList(){
+
+      if(this.wsArr[0]){
+        this.wsArr[0].onclose = function()
+        { 
+          console.log('关闭 ws');
+        };
+      }
+
+      this.wsArr[0] = new WebSocket(`ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${this.partitionId}`)
+      this.wsArr[0].onmessage = (res) => {
         this.alarmList = JSON.parse(res.data)
       }
     },
-    setMeterData(partitionId){
-      var ws = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${partitionId}`)
-      ws.onmessage = (res) => {
+    setMeterData(){
+
+      if(this.wsArr[1]){
+        this.wsArr[1].onclose = function()
+        { 
+          console.log('关闭 ws');
+        };
+      }
+
+      this.wsArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}`)
+      this.wsArr[1].onmessage = (res) => {
         this.meterList = JSON.parse(res.data)
         this.meterList.push([])
       }
     },
-    setMeterLevelObj(partitionId){
-      var ws = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${partitionId}`)
-      ws.onmessage = (res) => {
+    setMeterLevelObj(){
+
+      if(this.wsArr[2]){
+        this.wsArr[2].onclose = function()
+        { 
+          console.log('关闭 ws');
+        };
+      }
+
+      this.wsArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}`)
+      this.wsArr[2].onmessage = (res) => {
         this.meterLevelObj = JSON.parse(res.data)
       }
     }
   },
   created(){
-    // 获取一个partitionId 先调试报警数据
-    getPartitionList().then(res => {
-      console.log(res);
-    })
-    this.setAlarmList(2)
-    this.setMeterData(2)
-    this.setMeterLevelObj(2)
+    if(this.partitionId){
+      this.setAlarmList()
+      this.setMeterData()
+      this.setMeterLevelObj()
+    }
   }
 }
 </script>

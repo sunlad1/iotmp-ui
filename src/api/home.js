@@ -55,4 +55,3 @@ export const getOperateDeviceTypes = (obj) => {
     params: obj
   })
 }
-
