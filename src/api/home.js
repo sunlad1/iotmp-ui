@@ -37,3 +37,13 @@ export const deviceList = (obj) => {
     params: obj
   })
 }
+
+// 获取设备列表信息
+export const getOperateDeviceTypes = (obj) => {
+  return request({
+    url: '/device/getOperateDeviceTypes',
+    method: 'get',
+    params: obj
+  })
+}
+

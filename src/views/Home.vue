@@ -71,6 +71,43 @@
     height: 100vh;
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
+
+
+  .el-table thead{
+    color: #fff;
+  }
+  .el-table .cell{
+    line-height: unset;
+  }
+
+  .el-table td, .el-table th{
+    padding: .039rem 0;
+  }
+
+
+  .el-table::before{
+    height: 0 !important;
+  }
+  .el-table{
+    background: transparent !important;
+    color: #fff !important;
+  }
+  .el-table td,.is-leaf{
+    border-bottom: 1px solid #3625ab;
+  }
+
+   .el-table th{
+     border:none !important;
+   }
+
+  .el-table th, .el-table tr{
+    background: transparent !important;
+  }
+
+
+
+
+    
     table{
       width: auto !important;
       td{
@@ -94,11 +131,16 @@
     }
     .showContainer{
       display: flex;
+      justify-content: space-between;
       flex-direction: column;
       height: 100%;
+      max-height: 100%;
+      overflow: hidden;
     }
     .insideWarper{
       height: 100%;
+      max-height: 100%;
+      overflow: hidden;
       width: 100vw;
       padding: .23rem;
     }
@@ -143,23 +185,23 @@
       }
     }
     .equipmentManage{
-      flex: 9;
+      flex: 0 0 33.8%;
+      overflow: hidden;
     }
     .content {
       width: 100vw;
       margin: 0 auto;
-      flex: 13;
+      flex: 0 0 50.7%;
       .top {
         display: flex;
         justify-content: space-between;
         width: 100%;
         .left {
-          height: 100%;
-          flex:1.5;
+          flex: 0 0 32.38%;
         }
         .right {
           height: 100%;
-          flex:3;
+          flex: 0 0 66.94%;
         }
       }
     }

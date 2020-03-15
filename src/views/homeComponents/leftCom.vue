@@ -103,8 +103,6 @@ export default {
       this.meterList = res.data
       this.meterList.push([])
     })
-
-
   }
 }
 </script>
@@ -114,28 +112,6 @@ export default {
   height: 100%;
   padding-right: .15rem;
 
-  .el-table thead{
-    color: #fff;
-  }
-
-  .el-table::before{
-    height: 0 !important;
-  }
-  .el-table{
-    background: transparent !important;
-    color: #fff !important;
-  }
-  .el-table td,.is-leaf{
-    border-bottom: 1px solid #3625ab;
-  }
-
-   .el-table th{
-     border:none !important;
-   }
-
-  .el-table th, .el-table tr{
-    background: transparent !important;
-  }
 
   .botttom{
     padding: 0 .15rem;
@@ -224,6 +200,7 @@ export default {
     // background-size: contain;
     background-size: 100% 100%;
     height: 50%;
+    flex: 1;
   }
 }
 </style>
