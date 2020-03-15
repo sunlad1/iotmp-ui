@@ -1,0 +1,39 @@
+import request from '@/utils/request';
+
+
+// 设备报警
+export const getUnRemovedAlarmList = (obj) => {
+  return request({
+    url: '/alarmHandle/getUnRemovedAlarmList',
+    method: 'get',
+    params: obj
+  })
+}
+
+// 侧边栏数据
+export const getPartitionList = (obj) => {
+  return request({
+    url: '/device/getPartitionList',
+    method: 'get',
+    params: obj
+  })
+}
+
+
+// 获取环控仪表的数据
+export const getMeterData = (obj) => {
+  return request({
+    url: '/dataMonitor/getMeterData',
+    method: 'get',
+    params: obj
+  })
+}
+
+// 获取设备列表信息
+export const deviceList = (obj) => {
+  return request({
+    url: '/device/deviceList',
+    method: 'get',
+    params: obj
+  })
+}

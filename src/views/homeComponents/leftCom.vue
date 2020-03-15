@@ -12,51 +12,20 @@
           <span>当前状态</span>
         </div>
         <div class="manyData">
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
+          <div v-for="(item,index) in meterList" :key="index">
+            <div class="item" v-if="item.id">
+              <div class="point"><span></span></div>
+              <span>{{ item.valueName }}</span>
+              <span class="bar">|</span>
+              <span>{{ item.deviceValue }}{{ item.valueUnitName }}</span>
+            </div>
+
+            <div class="item" style="color: 0e68f6;" v-else>
+              查看更多分组信息 >>
+            </div>
+
           </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item">
-            <div class="point"><span></span></div>
-            <span>温度</span>
-            <span class="bar">|</span>
-            <span>26℃</span>
-          </div>
-          <div class="item" style="color: 0e68f6;">
-            查看更多分组信息 >>
-          </div>
+
         </div>
       </div>
     </div>
@@ -67,21 +36,32 @@
       </div>
       <div class="botttom">
         <el-table
-          :data="tableData"
+          :data="alarmList"
           style="width: 100%">
           <el-table-column
-            prop="date"
-            label="日期"
-            width="180">
+            prop="alarmName"
+            label="报警名称"
+          >
           </el-table-column>
           <el-table-column
-            prop="name"
-            label="姓名"
-            width="180">
+            prop="alarmSource"
+            label="报警源"
+          >
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="地址">
+            prop="alarmSource"
+            label="报警类型"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="alarmAttr"
+            label="源属性"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="alarmDescribe"
+            label="报警描述"
+          >
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -95,23 +75,36 @@
 </template>
 
 <script>
+import { getUnRemovedAlarmList, getPartitionList, getMeterData } from '@/api/home'
 export default {
   data(){
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市'
-      }]
+      alarmList: [],
+      meterList: {}
     }
+  },
+  created(){
+    // 获取一个partitionId 先调试报警数据
+    getPartitionList().then(res => {
+      console.log(res);
+    })
+
+    // 报警接口
+    getUnRemovedAlarmList({
+      partitionId: 2
+    }).then(res => {
+      this.alarmList = res.data
+    })
+
+    // 获取仪表的数据
+    getMeterData({
+      partitionId: 2
+    }).then(res => {
+      this.meterList = res.data
+      this.meterList.push([])
+    })
+
+
   }
 }
 </script>

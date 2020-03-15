@@ -1,13 +1,14 @@
-const {VUE_APP_ENV} = process.env
+const {NODE_ENV} = process.env
 
-let ENV = 'PROD'
+let BASE_URL = ''
 
-if(VUE_APP_ENV === "development") {
-  ENV = 'DEV'
-  console.warn('当前处于开发环境')
-} else if(VUE_APP_ENV === "qa"){
-  ENV = 'QA'
-  console.warn('当前处于QA环境')
+if(NODE_ENV === 'production'){
+  BASE_URL = ''
+}else if(NODE_ENV === 'development'){
+  BASE_URL = 'http://39.99.132.48:10098/'
+
 }
 
-export default ENV
+export {
+  BASE_URL
+}

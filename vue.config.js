@@ -1,8 +1,14 @@
 module.exports = {
   publicPath:'/',
   devServer: {
-    port: 8080,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    port: 1888,
+    proxy: {
+      '/': {
+        target: 'http://39.99.132.48:10098', // 公网ip
+        ws: true
+      }
+    }
   },
   css: {
     loaderOptions: {
