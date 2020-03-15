@@ -240,7 +240,7 @@ export default {
   .environmentControl{
     background: url(/img/surveillance.a11582f6.png) center center no-repeat;
     background-size: 100% 100%;
-    height: 50%;
+    // height: 50%;
   }
   .equipmentWarn{
     margin-top: 20px;

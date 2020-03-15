@@ -24,7 +24,9 @@
             <div class="left">
               <leftCom></leftCom>
             </div>
-            <div class="right"><VideoSurveillance/></div>
+            <div class="right" id="right">
+              <VideoSurveillance/>
+            </div>
           </div>
         </div>
         <div class="equipmentManage">
@@ -210,8 +212,8 @@
           flex: 0 0 32.38%;
         }
         .right {
-          height: 100%;
-          flex: 0 0 66.94%;
+          height: auto;
+          flex: 0 0 65%;
         }
       }
     }

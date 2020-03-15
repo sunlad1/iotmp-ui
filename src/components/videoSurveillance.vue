@@ -1,5 +1,5 @@
 <template>
-  <div class="video-surveillance">
+  <div class="video-surveillance" id="video-surveillance">
     <div class="header">
       <div class="title">
         <div class="ico"></div>
@@ -19,7 +19,9 @@
         </a-select>
       </div> -->
     </div>
-    <div class="content" id="playWnd" ></div>
+    <!-- <div class="content" id="playWnd" ></div> -->
+    <!-- <div class="content contentContainer"></div> -->
+    <div class="contentContainer"></div>
   </div>
 </template>
 <script src="jsWebControl-1.0.0.min.js"></script>
@@ -28,6 +30,8 @@
 var oWebControl = null; // 插件对象
 var initCount = 0;
 var pubKey = "";
+var widthGrid = 0;
+var heightGrid = 0;
 function remToPx(rem) {
   if (!rem) {
     return 0;
@@ -53,7 +57,7 @@ function initPlugin() {
         .then(
           function() {
             oWebControl
-              .JS_CreateWnd("playWnd", 1080, 400)
+              .JS_CreateWnd("playWnd", widthGrid, heightGrid)
               .then(function() {
                 init();
               });
@@ -153,7 +157,7 @@ function setEncrypt(value) {
   encrypt.setPublicKey(pubKey);
   return encrypt.encrypt(value);
 }
-initPlugin();
+// initPlugin();                                                                   //dsadasdsadasd
 // 设置窗口控制回调
 function setCallbacks() {
   oWebControl.JS_SetWindowControlCallback({
@@ -174,7 +178,38 @@ export default {
       current: [0]
     };
   },
-  mounted() {},
+  mounted() {
+    let timer = null   //video-surveillance
+    // let playWnd = document.getElementById('playWnd')
+    let surveillance = document.getElementById('video-surveillance')
+    let right = document.getElementById('right')
+    let con = document.getElementsByClassName('contentContainer')[0]
+    this.$nextTick(() => {
+      setTimeout(() =>{
+      // setInterval(() =>{
+        // let rw = con.offsetWidth
+        // let rh = con.offsetWidth
+
+
+
+        // heightGrid = playWnd.offsetHeight
+        // let str = `<div class="content" style="width: ${rw}px;height:${rh}px;" id="playWnd" ></div>`
+        // console.log(str);
+        
+        // right.appendChild(str)
+        widthGrid = right.offsetWidth
+        heightGrid = con.offsetHeight
+        console.log(widthGrid);
+        console.log(heightGrid);
+        
+        con.setAttribute('id','playWnd');
+        surveillance.style.width = widthGrid + 'px'
+        // surveillance.style.height = heightGrid + 'px'
+          initPlugin()
+
+      },1000)
+    })
+  },
   methods: {
     handleChange(value) {
       console.log(`selected ${value}`);
@@ -186,8 +221,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .video-surveillance {
-  width: 100%;
+  // width: 100%;
   height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
   background: url("./../assets/images/surveillance.png") center center no-repeat;
   // background-size: contain;
   background-size: 100% 100%;
@@ -196,7 +234,6 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 0.6rem;
     padding-top: 0.15rem;
 
     .title {
@@ -234,10 +271,12 @@ export default {
       }
     }
   }
-  .content {
+  .content, .contentContainer {
     position: relative;
-    width: 1080px;   
-    height: 400px;     
+    // width: 1080px;
+    // height: 400px;
+    flex: 1;
+    overflow: hidden;
     margin: 0 auto;
     margin-top: 10px;  
     margin-left: 0.2rem;  
