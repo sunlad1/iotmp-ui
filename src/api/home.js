@@ -29,6 +29,15 @@ export const getMeterData = (obj) => {
   })
 }
 
+// 获取环控等级数据
+export const getMeterLevel = (obj) => {
+  return request({
+    url: '/dataMonitor/getMeterLevel',
+    method: 'get',
+    params: obj
+  })
+}
+
 // 获取设备列表信息
 export const deviceList = (obj) => {
   return request({

@@ -7,8 +7,8 @@
       </div>
       <div class="botttom">
         <div class="circle">
-          <span class="level">优</span>
-          <span>防火分区1</span>
+          <span class="level">{{ meterLevelObj.level }}</span>
+          <span>{{ meterLevelObj.partitionName }}</span>
           <span>当前状态</span>
         </div>
         <div class="manyData">
@@ -20,7 +20,7 @@
               <span>{{ item.deviceValue }}{{ item.valueUnitName }}</span>
             </div>
 
-            <div class="item" style="color: 0e68f6;" v-else>
+            <div class="item" style="color: 0e68f6;padding-left:.2rem" v-else>
               查看更多分组信息 >>
             </div>
 
@@ -75,12 +75,36 @@
 </template>
 
 <script>
-import { getUnRemovedAlarmList, getPartitionList, getMeterData } from '@/api/home'
+import { getPartitionList } from '@/api/home'
+import { websoketURL } from '@/config/env'
+
 export default {
   data(){
     return {
       alarmList: [],
-      meterList: {}
+      meterList: {},
+      meterLevelObj:{}
+    }
+  },
+  methods:{
+    setAlarmList(partitionId){
+      var ws = new WebSocket(`ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${partitionId}`)
+      ws.onmessage = (res) => {
+        this.alarmList = JSON.parse(res.data)
+      }
+    },
+    setMeterData(partitionId){
+      var ws = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${partitionId}`)
+      ws.onmessage = (res) => {
+        this.meterList = JSON.parse(res.data)
+        this.meterList.push([])
+      }
+    },
+    setMeterLevelObj(partitionId){
+      var ws = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${partitionId}`)
+      ws.onmessage = (res) => {
+        this.meterLevelObj = JSON.parse(res.data)
+      }
     }
   },
   created(){
@@ -88,21 +112,9 @@ export default {
     getPartitionList().then(res => {
       console.log(res);
     })
-
-    // 报警接口
-    getUnRemovedAlarmList({
-      partitionId: 2
-    }).then(res => {
-      this.alarmList = res.data
-    })
-
-    // 获取仪表的数据
-    getMeterData({
-      partitionId: 2
-    }).then(res => {
-      this.meterList = res.data
-      this.meterList.push([])
-    })
+    this.setAlarmList(2)
+    this.setMeterData(2)
+    this.setMeterLevelObj(2)
   }
 }
 </script>

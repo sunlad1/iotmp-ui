@@ -7,10 +7,10 @@
     <div class="tableGrid">
       <div class="tableItem" v-for="(item,index) in tableData" :key="index">
         <div class="botttom">
-          <p class="equipmentTitle">通风系统</p>
+          <p class="equipmentTitle">{{ typeList[index].typeName }}</p>
           <div class="equipmentGrid">
             <el-table
-              :data="tableData"
+              :data="tableData[index]"
               height="1rem"
               style="width: 100%">
               <el-table-column
@@ -39,25 +39,41 @@
 </template>
 
 <script>
-import { deviceList, getOperateDeviceTypes } from '@/api/home'
+import { getOperateDeviceTypes } from '@/api/home'
+import { websoketURL } from '@/config/env'
 
 export default {
   data(){
     return {
-      tableData: []
+      tableData: [],
+      typeList:[]
+    }
+  },
+  methods:{
+    WebSocketFun(obj,index){
+      let partitionId = obj.partitionId
+      let deviceTypeId = obj.deviceTypeId
+      var ws = new WebSocket(`ws://${websoketURL}/ws/deviceList?deviceTypeId=${deviceTypeId}&partitionId=${partitionId}`)
+
+      ws.onmessage = (res) => {
+        if(!this.tableData[index]){
+          this.$set(this.tableData, index, [])
+        }
+        this.$set(this.tableData, index, JSON.parse(res.data))
+      }
     }
   },
   created(){
 
     getOperateDeviceTypes().then(res => {
-      console.log(res);
-      // 获取设备列表信息
-      deviceList({
-        partitionId: 2,
-        deviceTypeId: 2
-      }).then(res => {
-        this.tableData = [...res.data, ...res.data]
-        console.log(res);
+      this.typeList = res.data
+
+      res.data.map((el,index) => {
+        let obj = {
+          partitionId: 2,
+          deviceTypeId: el.id
+        }
+        this.WebSocketFun(obj,index)
       })
     })
   }
