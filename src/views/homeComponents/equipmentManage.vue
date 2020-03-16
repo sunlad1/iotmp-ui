@@ -2,15 +2,20 @@
   <div class="equipmentWarn">
     <div class="top">
       <img src="../../assets/logo.png" alt="">
-      <p>设备告警列表</p>
+      <p style="margin-right: auto;">设备告警列表</p>
+      <div>
+      <el-checkbox-group v-model="checkList">
+        <el-checkbox :label="item.typeName" v-for="(item,index) in typeList" :key="index"></el-checkbox>
+      </el-checkbox-group>
+      </div>
     </div>
     <div class="tableGrid">
-      <div class="tableItem" v-for="(item,index) in tableData" :key="index">
+      <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
         <div class="botttom">
           <p class="equipmentTitle">{{ typeList[index].typeName }}</p>
           <div class="equipmentGrid">
             <el-table
-              :data="tableData[index]"
+              :data="totalData[index]"
               height="1rem"
               style="width: 100%">
               <el-table-column
@@ -46,7 +51,9 @@ import { mapGetters } from 'vuex'
 export default {
   data(){
     return {
+      totalData: [],
       tableData: [],
+      checkList:[],
       typeList:[],
       wsArr: []
     }
@@ -57,6 +64,15 @@ export default {
   watch:{
     'partitionId': function() {
       this.initList()
+    },
+    'checkList': function(n) {
+      this.typeList.map ( v => {
+        if(n.includes(v.typeName)){
+          v.isShow = true
+        }else{
+          v.isShow = false
+        }
+      })
     }
   },
   methods:{
@@ -66,7 +82,7 @@ export default {
           let obj = {
             deviceTypeId: el.id
           }
-          this.$set(this.tableData, index, [])
+          this.$set(this.totalData, index, [])
           this.WebSocketFun(obj,index)
         })
       }
@@ -82,16 +98,20 @@ export default {
 
       this.wsArr[index] = new WebSocket(`ws://${websoketURL}/ws/deviceList?deviceTypeId=${deviceTypeId}&partitionId=${this.partitionId}`)
       this.wsArr[index].onmessage = (res) => {
-        if(!this.tableData[index]){
-          this.$set(this.tableData, index, [])
+        if(!this.totalData[index]){
+          this.$set(this.totalData, index, [])
         }
-        this.$set(this.tableData, index, JSON.parse(res.data))
+        this.$set(this.totalData, index, JSON.parse(res.data))
       }
     }
   },
   async created(){
     let arr = await getOperateDeviceTypes()
     this.typeList = arr.data
+    this.typeList.map( (v)=>{
+      v.isShow = true
+    })
+    this.checkList = this.typeList.map( v => v.typeName)
     this.initList()
   }
 }
@@ -107,6 +127,9 @@ export default {
   padding-bottom: .15rem;
   display: flex;
   flex-direction: column;
+  .zero{
+    width: 0 !important;
+  }
   .equipmentTitle{
     color: #00a0d8;
     font-size: .125rem;
