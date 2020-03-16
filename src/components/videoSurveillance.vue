@@ -186,25 +186,12 @@ export default {
     let con = document.getElementsByClassName('contentContainer')[0]
     this.$nextTick(() => {
       setTimeout(() =>{
-      // setInterval(() =>{
-        // let rw = con.offsetWidth
-        // let rh = con.offsetWidth
-
-
-
-        // heightGrid = playWnd.offsetHeight
-        // let str = `<div class="content" style="width: ${rw}px;height:${rh}px;" id="playWnd" ></div>`
-        // console.log(str);
-        
-        // right.appendChild(str)
         widthGrid = right.offsetWidth
         heightGrid = con.offsetHeight
         console.log(widthGrid);
         console.log(heightGrid);
         
         con.setAttribute('id','playWnd');
-        surveillance.style.width = widthGrid + 'px'
-        // surveillance.style.height = heightGrid + 'px'
           initPlugin()
 
       },1000)
@@ -221,7 +208,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .video-surveillance {
-  // width: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   height: 100%;
   max-height: 100%;
   display: flex;
