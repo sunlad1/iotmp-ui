@@ -2,7 +2,7 @@
   <div class="leftContainer">
     <div class="environmentControl">
       <div class="leftComtop">
-        <img src="../../assets/logo.png" alt="">
+        <img src="/static/imgs/home_icon2.png" alt="">
         <p class="mainTitle">环控仪表</p>
       </div>
       <div class="botttom">
@@ -31,7 +31,7 @@
     </div>
     <div class="equipmentWarn">
       <div class="leftComtop">
-        <img src="../../assets/logo.png" alt="">
+        <img src="/static/imgs/home_icon1.png" alt="">
         <p class="mainTitle">设备告警列表</p>
       </div>
       <div class="botttom">
@@ -238,13 +238,13 @@ export default {
     }
   }
   .environmentControl{
-    background: url(/img/surveillance.a11582f6.png) center center no-repeat;
+    background: url('/static/imgs/bk_1.png') center center no-repeat;
     background-size: 100% 100%;
     // height: 50%;
   }
   .equipmentWarn{
     margin-top: 20px;
-    background: url(/img/surveillance.a11582f6.png) center center no-repeat;
+    background: url('/static/imgs/bk_2.png') center center no-repeat;
     // background-size: contain;
     background-size: 100% 100%;
     height: 50%;

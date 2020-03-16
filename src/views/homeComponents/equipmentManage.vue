@@ -1,7 +1,7 @@
 <template>
   <div class="equipmentWarn">
     <div class="top">
-      <img src="../../assets/logo.png" alt="">
+      <img src="/static/imgs/home_icon3.png" alt="">
       <p style="margin-right: auto;">设备告警列表</p>
       <div>
       <el-checkbox-group v-model="checkList">
@@ -107,12 +107,17 @@ export default {
   },
   async created(){
     let arr = await getOperateDeviceTypes()
-    this.typeList = arr.data
-    this.typeList.map( (v)=>{
-      v.isShow = true
-    })
-    this.checkList = this.typeList.map( v => v.typeName)
-    this.initList()
+    if(arr.data instanceof Array && arr.data.length > 0){
+      console.log('arr.data');
+      console.log(arr.data);
+      
+      this.typeList = arr.data
+      this.typeList.map( (v)=>{
+        v.isShow = true
+      })
+      this.checkList = this.typeList.map( v => v.typeName)
+      this.initList()
+    }
   }
 }
 </script>
@@ -121,7 +126,7 @@ export default {
 .equipmentWarn{
   height: 100%;
   padding-top: .15rem;
-  background: url(/img/surveillance.a11582f6.png) center center no-repeat;
+  background: url('/static/imgs/bk_3.png') center center no-repeat;
   background-size: 100% 100%;
   padding:0 .15rem;
   padding-bottom: .15rem;
