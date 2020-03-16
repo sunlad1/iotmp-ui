@@ -21,7 +21,9 @@
     </div>
     <!-- <div class="content" id="playWnd" ></div> -->
     <!-- <div class="content contentContainer"></div> -->
-    <div class="contentContainer"></div>
+    <div class="around">
+      <div class="contentContainer"></div>
+    </div>
   </div>
 </template>
 <script src="jsWebControl-1.0.0.min.js"></script>
@@ -186,13 +188,14 @@ export default {
     let con = document.getElementsByClassName('contentContainer')[0]
     this.$nextTick(() => {
       setTimeout(() =>{
-        widthGrid = right.offsetWidth
+        widthGrid = con.offsetWidth
         heightGrid = con.offsetHeight
+        con.setAttribute('id','playWnd');
+        console.log('widthGrid');
         console.log(widthGrid);
         console.log(heightGrid);
         
-        con.setAttribute('id','playWnd');
-          initPlugin()
+        initPlugin()
 
       },1000)
     })
@@ -260,15 +263,20 @@ export default {
       }
     }
   }
+  .around{
+    padding: 0.2rem;
+    flex: 1;
+    overflow: hidden;
+  }
   .content, .contentContainer {
+    height: 100%;
+    max-height: 100%;
     position: relative;
     // width: 1080px;
     // height: 400px;
-    flex: 1;
+    // flex: 1;
     overflow: hidden;
     margin: 0 auto;
-    margin-top: 10px;  
-    margin-left: 0.2rem;  
   }
 }
 </style>
