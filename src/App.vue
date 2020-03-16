@@ -40,4 +40,48 @@
   #app {
     height: 100%;
   }
+
+  .mainTitle{
+    font-size: 0.18rem !important;
+  }
+  .el-table thead{
+    color: #fff;
+  }
+  .el-table .cell{
+    line-height: unset;
+  }
+
+  .el-table td, .el-table th{
+    padding: .039rem 0;
+  }
+
+
+  .el-table::before{
+    height: 0 !important;
+  }
+  .el-table{
+    background: transparent !important;
+    color: #fff !important;
+  }
+  .el-table td,.is-leaf{
+    border-bottom: 1px solid #3625ab;
+  }
+
+   .el-table th{
+     border:none !important;
+   }
+
+  .el-table th, .el-table tr{
+    background: transparent !important;
+  }
+
+  .el-table__row:hover{
+    background: rgba(0, 153, 204, .4) !important;
+  }
+  .el-table__row:active{
+    background: rgba(0, 153, 204, .4);
+  }
+  .el-table tbody tr:hover>td { 
+    background: rgba(0, 153, 204, .4) !important;
+  }
 </style>

@@ -69,7 +69,7 @@
     methods: {}
   };
 </script>
-<style lang="less">
+<style lang="less" scoped>
   .Home {
     display: flex;
     flex-direction: column;
@@ -77,48 +77,6 @@
     height: 100vh;
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
-
-
-  .el-table thead{
-    color: #fff;
-  }
-  .el-table .cell{
-    line-height: unset;
-  }
-
-  .el-table td, .el-table th{
-    padding: .039rem 0;
-  }
-
-
-  .el-table::before{
-    height: 0 !important;
-  }
-  .el-table{
-    background: transparent !important;
-    color: #fff !important;
-  }
-  .el-table td,.is-leaf{
-    border-bottom: 1px solid #3625ab;
-  }
-
-   .el-table th{
-     border:none !important;
-   }
-
-  .el-table th, .el-table tr{
-    background: transparent !important;
-  }
-
-.el-table__row:hover{
-  background: rgba(0, 153, 204, .4) !important;
-}
-.el-table__row:active{
-  background: rgba(0, 153, 204, .4);
-}
-.el-table tbody tr:hover>td { 
-  background: rgba(0, 153, 204, .4) !important;
-}
     
     table{
       width: auto !important;

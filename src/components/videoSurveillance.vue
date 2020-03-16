@@ -226,23 +226,25 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding-top: 0.15rem;
-
+    align-items: center;
     .title {
       position: relative;
       color: #0099cc;
       font-size: 0.18rem;
-      line-height: 0.5rem;
-      margin-top: 5px;
-      margin-left: 70px;
+      // line-height: 0.5rem;
+      margin-top: .07rem;
+      margin-left: .2rem;
       font-family: "Heiti SC";
-
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .ico {
-        position: absolute;
-        left: -30px;
-        top: 15px;
+        // position: absolute;
+        // left: -30px;
+        // top: 15px;
         width: 0.22rem;
         height: 0.24rem;
+        margin-top: 5px;
         background: url("./../assets/images/sprite.png") top left no-repeat;
       }
     }

@@ -3,7 +3,7 @@
     <div class="environmentControl">
       <div class="leftComtop">
         <img src="../../assets/logo.png" alt="">
-        <p>环控仪表</p>
+        <p class="mainTitle">环控仪表</p>
       </div>
       <div class="botttom">
         <div class="circle">
@@ -32,7 +32,7 @@
     <div class="equipmentWarn">
       <div class="leftComtop">
         <img src="../../assets/logo.png" alt="">
-        <p>设备告警列表</p>
+        <p class="mainTitle">设备告警列表</p>
       </div>
       <div class="botttom">
         <el-table
