@@ -2,17 +2,17 @@
   <div class="equipmentWarn">
     <div class="top">
       <img src="/static/imgs/home_icon3.png" alt="">
-      <p style="margin-right: auto;">设备告警列表</p>
+      <p style="margin-right: auto;">设备运行状态及管理</p>
       <div>
-      <el-checkbox-group v-model="checkList">
-        <el-checkbox :label="item.typeName" v-for="(item,index) in typeList" :key="index"></el-checkbox>
-      </el-checkbox-group>
+        <el-checkbox-group v-model="checkList">
+          <el-checkbox :label="item.groupName" v-for="(item,index) in typeList" :key="index"></el-checkbox>
+        </el-checkbox-group>
       </div>
     </div>
     <div class="tableGrid">
       <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
         <div class="botttom">
-          <p class="equipmentTitle">{{ typeList[index].typeName }}</p>
+          <p class="equipmentTitle">{{ typeList[index].groupName }}</p>
           <div class="equipmentGrid">
             <el-table
               :data="totalData[index]"
@@ -63,11 +63,11 @@ export default {
   },
   watch:{
     'partitionId': function() {
-      this.initList()
+      this.initTypeList()
     },
     'checkList': function(n) {
       this.typeList.map ( v => {
-        if(n.includes(v.typeName)){
+        if(n.includes(v.groupName)){
           v.isShow = true
         }else{
           v.isShow = false
@@ -77,10 +77,10 @@ export default {
   },
   methods:{
     initList(){
-      if(this.partitionId) {
+      if(this.partitionId == 0 || this.partitionId) {
         this.typeList.map((el,index) => {
           let obj = {
-            deviceTypeId: el.id
+            groupId: el.id
           }
           this.$set(this.totalData, index, [])
           this.WebSocketFun(obj,index)
@@ -88,7 +88,7 @@ export default {
       }
     },
     WebSocketFun(obj,index){
-      let deviceTypeId = obj.deviceTypeId
+      let groupId = obj.groupId
       if(this.wsArr[index]){
         this.wsArr[index].onclose = function()
         { 
@@ -96,27 +96,29 @@ export default {
         };
       }
 
-      this.wsArr[index] = new WebSocket(`ws://${websoketURL}/ws/deviceList?deviceTypeId=${deviceTypeId}&partitionId=${this.partitionId}`)
+      this.wsArr[index] = new WebSocket(`ws://${websoketURL}/ws/deviceList?groupId=${groupId}&partitionId=${this.partitionId}`)
       this.wsArr[index].onmessage = (res) => {
         if(!this.totalData[index]){
           this.$set(this.totalData, index, [])
         }
         this.$set(this.totalData, index, JSON.parse(res.data))
       }
+    },
+    async initTypeList(){
+      let arr = await getOperateDeviceTypes({partitionId: this.partitionId})
+      if(arr.data instanceof Array && arr.data.length > 0){
+        this.typeList = arr.data
+        this.typeList.map( (v)=>{
+          v.isShow = true
+        })
+        this.checkList = this.typeList.map( v => v.groupName)
+        this.initList()
+      }
     }
   },
-  async created(){
-    let arr = await getOperateDeviceTypes()
-    if(arr.data instanceof Array && arr.data.length > 0){
-      console.log('arr.data');
-      console.log(arr.data);
-      
-      this.typeList = arr.data
-      this.typeList.map( (v)=>{
-        v.isShow = true
-      })
-      this.checkList = this.typeList.map( v => v.typeName)
-      this.initList()
+  created(){
+    if(this.partitionId != ''){
+      this.initTypeList()
     }
   }
 }

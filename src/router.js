@@ -25,7 +25,15 @@ const router =  new Router({
     },
     {
       path: '/home',
-      component: () => import('./views/Home.vue')
+      redirect: "/home/showControl",
+      component: () => import('./views/Home.vue'),
+      children:[
+        {
+          path: 'showControl',
+          component:  () => import('./views/showControl.vue'),
+          name: 'showControl'
+        }
+      ]
     },
   ],
 });

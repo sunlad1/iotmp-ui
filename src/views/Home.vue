@@ -1,6 +1,8 @@
 <template>
   <div class="Home">
+    <!-- 侧边栏 -->
     <navMenu></navMenu>
+    <!-- 顶部信息 -->
     <div class="header">
       <div class="header-left">
         <div class="logon">智慧管廊运维平台</div>
@@ -17,39 +19,19 @@
       </div>
       <div class="header-right"></div>
     </div>
+    <!-- 中心部分 -->
     <div class="insideWarper">
-      <div class="showContainer">
-        <div class="content">
-          <div class="top">
-            <div class="left">
-              <leftCom></leftCom>
-            </div>
-            <div class="right" id="right">
-              <VideoSurveillance/>
-            </div>
-          </div>
-        </div>
-        <div class="spaceOccupy"></div>
-        <div class="equipmentManage">
-          <equipmentManage></equipmentManage>
-        </div>
-      </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-  import VideoSurveillance from '@/components/videoSurveillance';
-  import leftCom from './homeComponents/leftCom';
-  import equipmentManage from './homeComponents/equipmentManage';
   import navMenu from './homeComponents/navMenu';
 
   export default {
     name: 'Home',
     components: {
-      VideoSurveillance,
-      leftCom,
-      equipmentManage,
       navMenu
     },
     data() {
@@ -77,36 +59,6 @@
     height: 100vh;
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
-    
-    table{
-      width: auto !important;
-      td{
-        div{
-          white-space: nowrap;
-          font-size: .09rem !important;
-          span{
-            font-size: .09rem !important;
-          }
-        }
-      }
-      th{
-        div{
-          white-space: nowrap;
-          font-size: .09rem !important;
-          span{
-            font-size: .09rem !important;
-          }
-        }
-      }
-    }
-    .showContainer{
-      display: flex;
-      justify-content: space-between;
-      flex-direction: column;
-      height: 100%;
-      max-height: 100%;
-      overflow: hidden;
-    }
     .insideWarper{
       height: 100%;
       max-height: 100%;
@@ -122,7 +74,6 @@
       background: rgba(0, 0, 0, .5);
       border-bottom: solid 1px #003399;
       z-index: 10000;
-
       .header-left {
         display: flex;
         align-items: center;
@@ -133,7 +84,6 @@
           margin-left: 65px;
           background: url("./../assets/images/logo.png") center center no-repeat;
         }
-
         .menu {
           width: 800px;
           height: 100%;
@@ -150,7 +100,6 @@
           }
         }
       }
-
       .header-right {
 
       }
@@ -161,24 +110,6 @@
     .equipmentManage{
       flex: 0 0 35%;
       overflow: hidden;
-    }
-    .content {
-      width: 100%;
-      margin: 0 auto;
-      flex: 0 0 60%;
-      .top {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        height: 100%;
-        .left {
-          flex: 0 0 32.38%;
-        }
-        .right {
-          height: auto;
-          flex: 0 0 65%;
-        }
-      }
     }
   }
 </style>

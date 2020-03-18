@@ -3,7 +3,18 @@
     <div class="environmentControl">
       <div class="leftComtop">
         <img src="/static/imgs/home_icon2.png" alt="">
-        <p class="mainTitle">环控仪表</p>
+        <p class="mainTitle" style="margin-right: auto">环控仪表</p>
+        <div style="width: 120px">
+          <el-select v-model="groupVal" placeholder="请选择" size="mini">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.groupName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+
       </div>
       <div class="botttom">
         <div class="circle">
@@ -76,15 +87,18 @@
 
 <script>
 import { websoketURL } from '@/config/env'
+import { getMeterGroups } from '@/api/home'
 import { mapGetters } from 'vuex'
 
 export default {
   data(){
     return {
+      groupVal: '',
       alarmList: [],
       meterList: {},
       meterLevelObj:{},
-      wsArr: []
+      wsArr: [],
+      options: [],
     }
   },
   computed:{
@@ -96,11 +110,32 @@ export default {
       this.meterList = []
       this.meterLevelObj = {}
       this.setAlarmList()
-      this.setMeterData()
-      this.setMeterLevelObj()
+      this.initMeterList()
+    },
+    'groupVal': function(n){
+      if(n != ''){
+        this.setMeterData(n)
+        this.setMeterLevelObj(n)   
+      }
     }
   },
   methods:{
+    async initMeterList(){
+      // 需要获取环控仪表的分组列表再请求数据
+      try {
+        let arr = await getMeterGroups({partitionId: this.partitionId})
+        
+        if(arr.data instanceof Array && arr.data.length >0){
+          this.groupVal = arr.data[0].id
+          this.options = arr.data  
+        }else{
+          this.options = []
+          this.groupVal = ''
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     setAlarmList(){
 
       if(this.wsArr[0]){
@@ -115,7 +150,7 @@ export default {
         this.alarmList = JSON.parse(res.data)
       }
     },
-    setMeterData(){
+    setMeterData(groupId){
 
       if(this.wsArr[1]){
         this.wsArr[1].onclose = function()
@@ -124,13 +159,18 @@ export default {
         };
       }
 
-      this.wsArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}`)
+      console.log('groupId');
+      console.log(groupId);
+      console.log(this.partitionId);
+      
+
+      this.wsArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}&groupId=${groupId}`)
       this.wsArr[1].onmessage = (res) => {
         this.meterList = JSON.parse(res.data)
         this.meterList.push([])
       }
     },
-    setMeterLevelObj(){
+    setMeterLevelObj(groupId){
 
       if(this.wsArr[2]){
         this.wsArr[2].onclose = function()
@@ -139,7 +179,7 @@ export default {
         };
       }
 
-      this.wsArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}`)
+      this.wsArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}&groupId=${groupId}`)
       this.wsArr[2].onmessage = (res) => {
         this.meterLevelObj = JSON.parse(res.data)
       }
@@ -148,8 +188,7 @@ export default {
   created(){
     if(this.partitionId){
       this.setAlarmList()
-      this.setMeterData()
-      this.setMeterLevelObj()
+      this.initMeterList()
     }
   }
 }

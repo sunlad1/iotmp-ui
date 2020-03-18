@@ -6,7 +6,7 @@
   </div>
   <el-menu
     @open="handleOpen" @close="handleClose" :collapse="isCollapse" :collapse-transition="false"
-    default-active="0"
+    :default-active="activeIndex"
     class="el-menu-vertical-demo"
     text-color="#2DA2FD"
     active-text-color="#00FFFF">
@@ -49,6 +49,7 @@ import { getPartitionList } from '@/api/home'
     data() {
       return {
         isCollapse: true,
+        activeIndex: 0,
         menuList: []
       };
     },
@@ -58,21 +59,21 @@ import { getPartitionList } from '@/api/home'
         // 初始化 id
         if(this.menuList[0].childPartition.length > 0){
           if(this.menuList[0].childPartition[0].length > 0){
+            this.activeIndex = '0-0-0'
             console.log();
           }else{
+            this.activeIndex = '0-0'
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].id)
           }
         }else{
+          this.activeIndex = '0'
           this.$store.dispatch('setPartitionId', this.menuList[0].id)
         }
       })
     },
     methods: {
       changePartition(obj){
-        console.log(obj);
         if(obj.id){
-          console.log('obj.id');
-          console.log(obj.id);
           this.$store.dispatch('setPartitionId', obj.id)
         }
       },
@@ -92,15 +93,12 @@ import { getPartitionList } from '@/api/home'
 
 .el-menu-item:hover{
   background:rgba(0,255,255, .1);
-  // background: rgba(0, 153, 204, .4);
 }
 .el-submenu__title:hover{
   background:rgba(0,255,255, .1);
-  // background: rgba(0, 153, 204, .4);
 }
 .el-submenu .el-menu-item:active{
   background:rgba(0,255,255, .1);
-  // background: rgba(0, 153, 204, .4);
 }
 .el-menu--collapse{
   width: 0 !important;
@@ -120,7 +118,6 @@ import { getPartitionList } from '@/api/home'
 }
 .el-menu-item.is-active {
   background:rgba(0,255,255, .1);
-  // background: rgba(0, 153, 204, .4) !important;
 }
 .navMenu{
   width: 200px;

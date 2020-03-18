@@ -19,7 +19,7 @@
     }
   }
 </script>
-<style>
+<style lang="less">
   html, body {
     width: 100%;
     overflow-x: hidden;
@@ -84,4 +84,50 @@
   .el-table tbody tr:hover>td { 
     background: rgba(0, 153, 204, .4) !important;
   }
+
+  table{
+    width: auto !important;
+    td{
+      div{
+        white-space: nowrap;
+        font-size: .09rem !important;
+        span{
+          font-size: .09rem !important;
+        }
+      }
+    }
+    th{
+      div{
+        white-space: nowrap;
+        font-size: .09rem !important;
+        span{
+          font-size: .09rem !important;
+        }
+      }
+    }
+  }
+
+  .el-input__inner{
+    background: transparent !important;
+  }
+  .el-select-dropdown{
+    background: rgba(10, 8, 42, .9) !important;
+    border: 1px solid rgba(3, 99, 255, 0.3) !important;
+  }
+
+  .el-select-dropdown__item.hover, .el-select-dropdown__item:hover{
+    background:rgba(0,255,255, .1) !important;
+  }
+
+  .el-popper[x-placement^=bottom] .popper__arrow{
+    border-bottom-color: rgba(3, 99, 255, 0.3) !important;
+  }
+
+  .el-popper[x-placement^=bottom] .popper__arrow::after{
+    border-bottom-color: rgba(10, 8, 42, .9) !important;
+  }
+
+// 
+
 </style>
+

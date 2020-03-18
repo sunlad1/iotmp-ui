@@ -55,3 +55,12 @@ export const getOperateDeviceTypes = (obj) => {
     params: obj
   })
 }
+
+// 获取设备列表信息
+export const getMeterGroups = (obj) => {
+  return request({
+    url: '/dataMonitor/getMeterGroups',
+    method: 'get',
+    params: obj
+  })
+}
