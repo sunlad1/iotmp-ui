@@ -16,7 +16,7 @@
           <div class="equipmentGrid">
             <el-table
               :data="totalData[index]"
-              height="1rem"
+              height="100%"
               style="width: 100%">
               <el-table-column
                 prop="deviceName"
@@ -30,9 +30,13 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">关闭</span>
-                  <span style="color: #009dd5">|</span>
-                  <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">自动</span>
+                  <div class="operrateGrid">
+                    <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
+                      <span @click="handleEdit(el.id)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
+                      <span style="color: #009dd5" class="bar">|</span>
+                    </div>
+                  </div>
+                  <!-- <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">自动</span> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -44,7 +48,7 @@
 </template>
 
 <script>
-import { getOperateDeviceTypes } from '@/api/home'
+import { getOperateDeviceTypes, setOperate } from '@/api/home'
 import { websoketURL } from '@/config/env'
 import { mapGetters } from 'vuex'
 
@@ -62,8 +66,10 @@ export default {
     ...mapGetters(['partitionId'])
   },
   watch:{
-    'partitionId': function() {
-      this.initTypeList()
+    'partitionId': function(n) {
+      if(n != ''){
+        this.initTypeList()
+      }
     },
     'checkList': function(n) {
       this.typeList.map ( v => {
@@ -76,33 +82,79 @@ export default {
     }
   },
   methods:{
+    handleEdit(id){
+      setOperate({
+        operateId: id
+      }).then(res => {
+        if(res.status != 200){
+          this.$notify.error({
+            title: '错误',
+            message: '操作失败'
+          });
+        }else{
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success'
+          });
+        }
+      }).catch(() => {
+        this.$notify.error({
+          title: '错误',
+          message: '操作失败'
+        });
+      })
+    },
     initList(){
-      if(this.partitionId == 0 || this.partitionId) {
-        this.typeList.map((el,index) => {
-          let obj = {
-            groupId: el.id
-          }
-          this.$set(this.totalData, index, [])
-          this.WebSocketFun(obj,index)
-        })
-      }
+      this.typeList.map((el,index) => {
+        let obj = {
+          groupId: el.id
+        }
+        this.$set(this.totalData, index, [])
+        this.WebSocketFun(obj,index)
+      })
+    },
+    closeAllWs(){
+      this.wsArr.forEach( (v,index) => {
+        (this.wsArr[index] || {}).onclose(index,true)
+      })
     },
     WebSocketFun(obj,index){
       let groupId = obj.groupId
+      // 每次监控钱需要先关闭旧的监控
       if(this.wsArr[index]){
-        this.wsArr[index].onclose = function()
-        { 
-          console.log('关闭 ws');
-        };
+        this.wsArr[index].onclose(index,true)
       }
 
+      // new ws对象，进行监控 
       this.wsArr[index] = new WebSocket(`ws://${websoketURL}/ws/deviceList?groupId=${groupId}&partitionId=${this.partitionId}`)
+
+      this.wsArr[index].onopen = function()
+      {
+        console.log('打开ws-WebSocketFun');
+      };
+      
       this.wsArr[index].onmessage = (res) => {
         if(!this.totalData[index]){
           this.$set(this.totalData, index, [])
         }
         this.$set(this.totalData, index, JSON.parse(res.data))
       }
+
+      this.wsArr[index].onclose = function(i,flag)
+      { 
+        this.totalData[i] = []
+        if(!flag){
+          this.$notify({
+            title: '提示',
+            message: '数据监控出现异常，请刷新网页',
+            duration: 0
+          });
+        }
+        // 关闭 websocket
+        console.log('关闭ws-WebSocketFun');
+      };      
+
     },
     async initTypeList(){
       let arr = await getOperateDeviceTypes({partitionId: this.partitionId})
@@ -113,6 +165,9 @@ export default {
         })
         this.checkList = this.typeList.map( v => v.groupName)
         this.initList()
+      }else{
+        // 如果拿到的是空数据 就直接清空所有监控 即可
+        this.closeAllWs()
       }
     }
   },
@@ -134,6 +189,12 @@ export default {
   padding-bottom: .15rem;
   display: flex;
   flex-direction: column;
+  .operrateGrid{
+    display: flex;
+    & div:nth-last-child(1) span:nth-last-child(1){
+      color: transparent !important;
+    }
+  }
   .zero{
     width: 0 !important;
   }
@@ -144,6 +205,7 @@ export default {
   }
   .equipmentGrid{
     // overflow: auto;
+    flex: 1;
   }
   .el-table thead{
     color: #fff;
@@ -176,6 +238,10 @@ export default {
     white-space: nowrap;
   }
 
+  .el-table  .cell:nth-last-child(1){
+    max-width: 200px;
+  }
+  
   .tableGrid{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -187,8 +253,10 @@ export default {
       background: url(/img/surveillance.a11582f6.png) center center no-repeat;
       background-size: 100% 100%;
       .botttom{
-        padding: .15rem;
-
+        padding: .1rem;
+        display: flex;
+        height: 100%;
+        flex-direction: column;
       }
     }
   }

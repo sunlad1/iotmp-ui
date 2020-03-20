@@ -64,3 +64,13 @@ export const getMeterGroups = (obj) => {
     params: obj
   })
 }
+
+
+// 设备发出指令
+export const setOperate = (obj) => {
+  return request({
+    url: '/operation/send',
+    method: 'get',
+    params: obj
+  })
+}

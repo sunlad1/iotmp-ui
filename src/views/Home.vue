@@ -55,10 +55,11 @@
   .Home {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
+    background-size: 100% 100%;
     .insideWarper{
       height: 100%;
       max-height: 100%;
@@ -103,13 +104,6 @@
       .header-right {
 
       }
-    }
-    .spaceOccupy{
-      flex: 0 0 5%;
-    }
-    .equipmentManage{
-      flex: 0 0 35%;
-      overflow: hidden;
     }
   }
 </style>

@@ -39,7 +39,7 @@ export default {
   max-height: 100%;
   overflow: hidden;
   .spaceOccupy{
-    flex: 0 0 5%;
+    flex: 0 0 2%;
   }
   .equipmentManage{
     flex: 0 0 35%;
@@ -48,7 +48,8 @@ export default {
   .content {
     width: 100%;
     margin: 0 auto;
-    flex: 0 0 60%;
+    flex: 0 0 63%;
+    overflow: hidden;
     .top {
       display: flex;
       justify-content: space-between;
