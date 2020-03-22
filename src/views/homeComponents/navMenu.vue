@@ -49,7 +49,7 @@ import { getPartitionList } from '@/api/home'
     data() {
       return {
         isCollapse: true,
-        activeIndex: 0,
+        activeIndex: '0',
         menuList: []
       };
     },
@@ -58,9 +58,9 @@ import { getPartitionList } from '@/api/home'
         this.menuList = res.data
         // 初始化 id
         if(this.menuList[0].childPartition.length > 0){
-          if(this.menuList[0].childPartition[0].length > 0){
+          if(this.menuList[0].childPartition[0].childPartition.length > 0){
             this.activeIndex = '0-0-0'
-            console.log();
+            this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].childPartition[0].id)
           }else{
             this.activeIndex = '0-0'
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].id)

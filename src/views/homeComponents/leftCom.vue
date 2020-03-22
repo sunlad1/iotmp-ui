@@ -9,7 +9,7 @@
             <el-option
               v-for="item in options"
               :key="item.id"
-              :label="item.groupName"
+              :label="item.deviceName"
               :value="item.id">
             </el-option>
           </el-select>
@@ -135,9 +135,9 @@ export default {
         }else{
           // 清空数据的同时 还要关闭ws
           [1,2].forEach((v) => {
-            (this.wsLeftArr[v] || {}).onclose(true)
+            this.wsLeftArr[v] && this.wsLeftArr[v].onclose(true)
           });
-          (this.wsLeftArr[0] || {}).onclose(true)
+          this.wsLeftArr[0] && this.wsLeftArr[0].onclose(true)
           this.options = []
           this.groupVal = ''
         }
@@ -152,7 +152,6 @@ export default {
       }
 
       this.wsLeftArr[0] = new WebSocket(`ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${this.partitionId}`)
-
       this.wsLeftArr[0].onopen = function()
       {
         console.log('打开ws-setAlarmList');
@@ -180,13 +179,14 @@ export default {
         duration: 0
       });
     },
-    setMeterData(groupId){
+    setMeterData(deviceId){
 
       if(this.wsLeftArr[1]){
         this.wsLeftArr[1].onclose(true)
       }
       
-      this.wsLeftArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}&groupId=${groupId}`)
+      // this.wsLeftArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}&groupId=${groupId}`)
+      this.wsLeftArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?deviceId=${deviceId}`)
 
       this.wsLeftArr[1].onopen = function()
       {
@@ -208,13 +208,14 @@ export default {
       };
 
     },
-    setMeterLevelObj(groupId){
+    setMeterLevelObj(deviceId){
 
       if(this.wsLeftArr[2]){
         this.wsLeftArr[2].onclose(true)
       }
 
-      this.wsLeftArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}&groupId=${groupId}`)
+      // this.wsLeftArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}&groupId=${groupId}`)
+      this.wsLeftArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?deviceId=${deviceId}`)
 
       this.wsLeftArr[2].onopen = function()
       {

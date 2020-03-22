@@ -1,9 +1,9 @@
 <template>
-  <a-config-provider :locale="locale">
+  <!-- <a-config-provider :locale="locale"> -->
     <div id="app">
       <router-view/>
     </div>
-  </a-config-provider>
+  <!-- </a-config-provider> -->
 </template>
 
 <script>
@@ -127,7 +127,9 @@
     border-bottom-color: rgba(10, 8, 42, .9) !important;
   }
 
-// 
+  .el-notification{
+    z-index: 10000 !important;
+  }
 
 </style>
 

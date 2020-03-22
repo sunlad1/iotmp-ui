@@ -115,8 +115,8 @@ export default {
       })
     },
     closeAllWs(){
-      this.wsArr.forEach( (v,index) => {
-        (this.wsArr[index] || {}).onclose(index,true)
+      (this.wsArr || []).forEach( (v,index) => {
+        this.wsArr && this.wsArr[index].onclose(index,true)
       })
     },
     WebSocketFun(obj,index){
@@ -143,7 +143,7 @@ export default {
 
       this.wsArr[index].onclose = function(i,flag)
       { 
-        this.totalData[i] = []
+        if(this.totalData && this.totalData[i]) this.totalData[i] = []
         if(!flag){
           this.$notify({
             title: '提示',
@@ -165,9 +165,13 @@ export default {
         })
         this.checkList = this.typeList.map( v => v.groupName)
         this.initList()
+        console.log('have data');
       }else{
-        // 如果拿到的是空数据 就直接清空所有监控 即可
+        // 如果拿到的是空数据 就直接清空所有监控
         this.closeAllWs()
+        // 同时 清空数据
+        this.totalData = []
+        this.typeList = []
       }
     }
   },
@@ -252,6 +256,7 @@ export default {
     .tableItem{
       background: url(/img/surveillance.a11582f6.png) center center no-repeat;
       background-size: 100% 100%;
+      margin-bottom: 10px;
       .botttom{
         padding: .1rem;
         display: flex;

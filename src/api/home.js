@@ -23,7 +23,7 @@ export const getPartitionList = (obj) => {
 // 获取环控仪表的数据
 export const getMeterData = (obj) => {
   return request({
-    url: '/dataMonitor/getMeterData',
+    url: '/dataMonitor/getMeterDevices',
     method: 'get',
     params: obj
   })
@@ -59,7 +59,7 @@ export const getOperateDeviceTypes = (obj) => {
 // 获取设备列表信息
 export const getMeterGroups = (obj) => {
   return request({
-    url: '/dataMonitor/getMeterGroups',
+    url: '/dataMonitor/getMeterDevices',
     method: 'get',
     params: obj
   })
