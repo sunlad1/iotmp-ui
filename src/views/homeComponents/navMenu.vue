@@ -20,11 +20,11 @@
 
             <el-submenu :index="String(index)+'-'+String(i)" v-if="el.childPartition && el.childPartition.length > 0">
               <template slot="title">{{ el.partitionName }}</template>
-              <el-menu-item :index="String(index) +'-'+String(i)+'-'+String(I)" @click="changePartition(v)" v-for="(v,I) in el.childPartition" :key="I">{{ v.partitionName }}</el-menu-item>
+              <el-menu-item :index="String(index) +'-'+String(i)+'-'+String(I)" @click="changePartition(v, String(index) +'-'+String(i)+'-'+String(I))" v-for="(v,I) in el.childPartition" :key="I">{{ v.partitionName }}</el-menu-item>
             </el-submenu>
 
             <el-menu-item-group v-else>
-              <el-menu-item :index="String(index)+'-'+String(i)" @click="changePartition(el)">{{ el.partitionName }}</el-menu-item>
+              <el-menu-item :index="String(index)+'-'+String(i)" @click="changePartition(el, String(index)+'-'+String(i))">{{ el.partitionName }}</el-menu-item>
             </el-menu-item-group>
 
 
@@ -33,7 +33,7 @@
 
         </el-submenu>
 
-        <el-menu-item :index="String(index)" v-else @click="changePartition(item)">
+        <el-menu-item :index="String(index)" v-else @click="changePartition(item, String(index))">
           <span slot="title">{{ item.partitionName }}</span>
         </el-menu-item>
       </label>
@@ -53,28 +53,46 @@ import { getPartitionList } from '@/api/home'
         menuList: []
       };
     },
+    watch: {
+      'activeIndex': function(n) {
+        console.log(n);
+      }
+    },
     created(){
       getPartitionList().then(res => {
         this.menuList = res.data
+        // 存储数据到 store 
+        this.$store.dispatch('setPartitionList', this.menuList)
+
+        if(this.menuList.length <= 0){
+          return
+        }
         // 初始化 id
         if(this.menuList[0].childPartition.length > 0){
           if(this.menuList[0].childPartition[0].childPartition.length > 0){
             this.activeIndex = '0-0-0'
+            // 初始化当前选择的分区层级
+            this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].childPartition[0].id)
           }else{
             this.activeIndex = '0-0'
+            // 初始化当前选择的分区层级
+            this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].id)
           }
         }else{
           this.activeIndex = '0'
+          // 初始化当前选择的分区层级
+          this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
           this.$store.dispatch('setPartitionId', this.menuList[0].id)
         }
       })
     },
     methods: {
-      changePartition(obj){
+      changePartition(obj,level){
         if(obj.id){
           this.$store.dispatch('setPartitionId', obj.id)
+          this.$store.dispatch('setCurrentPartitionLevel', level)
         }
       },
       changeCollapse(){

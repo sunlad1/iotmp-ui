@@ -254,7 +254,7 @@ export default {
 
 
   .el-table thead{
-    color: #fff;
+    color: #ddd;
   }
 
   .el-table::before{
@@ -262,7 +262,7 @@ export default {
   }
   .el-table{
     background: transparent !important;
-    color: #fff !important;
+    color: #ddd !important;
   }
   .el-table td,.is-leaf{
     border-bottom: 1px solid #3625ab;
@@ -349,7 +349,7 @@ export default {
       margin-right: .22rem;
       padding-left: .2rem;
       span{
-        color: #fff;
+        color: #ddd;
         font-size: .12rem;
       }
       .level{

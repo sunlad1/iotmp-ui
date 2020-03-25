@@ -141,8 +141,8 @@ export default {
         this.$set(this.totalData, index, JSON.parse(res.data))
       }
 
-      this.wsArr[index].onclose = function(i,flag)
-      { 
+      this.wsArr[index].onclose = (i,flag) =>
+      {
         if(this.totalData && this.totalData[i]) this.totalData[i] = []
         if(!flag){
           this.$notify({
@@ -212,7 +212,7 @@ export default {
     flex: 1;
   }
   .el-table thead{
-    color: #fff;
+    color: #ddd;
   }
 
   .el-table::before{
@@ -220,7 +220,7 @@ export default {
   }
   .el-table{
     background: transparent !important;
-    color: #fff !important;
+    color: #ddd !important;
   }
   .el-table td,.is-leaf{
     border-bottom: 1px solid #3625ab;

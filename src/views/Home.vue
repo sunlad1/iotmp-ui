@@ -19,6 +19,22 @@
       </div>
       <div class="header-right"></div>
     </div>
+    <!-- 导航栏 -->
+    <div class="guideGrid">
+      <span>当前位置：</span>
+      <p v-if="levelArr.length == 1">
+        <span class="hignLightWord">{{ partitionedList[levelArr[0]].partitionName }}</span>
+      </p>
+      <p v-if="levelArr.length == 2">
+        <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
+        <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }}</span>
+      </p>
+      <p v-if="levelArr.length == 3">
+        <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
+        <span class="normalWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }} > </span>
+        <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].childPartition[levelArr[2]].partitionName }}</span>
+      </p>
+    </div>
     <!-- 中心部分 -->
     <div class="insideWarper">
       <router-view></router-view>
@@ -28,6 +44,7 @@
 
 <script>
   import navMenu from './homeComponents/navMenu';
+  import { mapGetters } from 'vuex';
 
   export default {
     name: 'Home',
@@ -37,10 +54,22 @@
     data() {
       return {
         routeData: [],
-        current: ['a']
+        current: ['a'],
+        levelArr: []
       };
     },
+    watch:{
+      'currentPartitionLevel': function(n) {
+        let arr = n.split('-')
+        arr = arr.map( v => Number(v))
+        this.levelArr = arr
+        console.log('this.partitionedList');
+        console.log(this.partitionedList[this.levelArr[0]].partitionName);
+        console.log(this.levelArr.length);
+      }
+    },
     computed: {
+      ...mapGetters(['currentPartitionLevel', 'partitionedList']),
       host() {
         return location.origin;
       }
@@ -60,12 +89,32 @@
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
     background-size: 100% 100%;
+    .guideGrid{
+      display: flex;
+      align-items: center;
+      color: #787DB8;
+      width: 100%;
+      padding-left: 100px;
+      padding-top: .23622rem;
+      p{
+        margin: 0;
+      }
+      .normalWord{
+        color: #787DB8;
+        font-size: 12px;
+      }
+      .hignLightWord{
+        font-size: 12px;
+        color: #00C3FF;
+      }
+    }
     .insideWarper{
       height: 100%;
       max-height: 100%;
       overflow: hidden;
       width: 100vw;
       padding: .23rem;
+      padding-top: 0.094488rem;
     }
     .header {
       display: flex;
@@ -83,7 +132,7 @@
           height: 100px;
           text-indent: -999px;
           margin-left: 65px;
-          background: url("./../assets/images/logo.png") center center no-repeat;
+          background: url("/static/imgs/logo.png") center center no-repeat;
         }
         .menu {
           width: 800px;

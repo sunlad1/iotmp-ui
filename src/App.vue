@@ -45,7 +45,7 @@
     font-size: 0.18rem !important;
   }
   .el-table thead{
-    color: #fff;
+    color: #ddd;
   }
   .el-table .cell{
     line-height: unset;
@@ -61,7 +61,7 @@
   }
   .el-table{
     background: transparent !important;
-    color: #fff !important;
+    color: #ddd !important;
   }
   .el-table td,.is-leaf{
     border-bottom: 1px solid #3625ab;
