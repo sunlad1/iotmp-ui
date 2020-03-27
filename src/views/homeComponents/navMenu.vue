@@ -1,5 +1,5 @@
 <template>
-<div class="navMenu">
+<div class="navMenu" :style="{'height': !isCollapse ? 'auto' : '0'}">
   <div class="control" @click="changeCollapse" :class="{ 'positionLeft' : isCollapse}">
     <span v-if="!isCollapse">&lsaquo;&lsaquo;</span>
     <span v-else>&rsaquo;&rsaquo;</span>

@@ -8,32 +8,16 @@
         <div class="logon">智慧管廊运维平台</div>
         <div class="menu">
           <a-menu v-model="current" mode="horizontal">
-            <a-menu-item key="a"> 展示控制</a-menu-item>
-            <a-menu-item key="b"> 数据监控</a-menu-item>
-            <a-menu-item key="c"> 报警列表</a-menu-item>
-            <a-menu-item key="d"> 资产管理</a-menu-item>
-            <a-menu-item key="e">运维管理</a-menu-item>
-            <a-menu-item key="f">系统设置</a-menu-item>
+            <a-menu-item key="0"> 展示控制</a-menu-item>
+            <a-menu-item key="1"> 数据监控</a-menu-item>
+            <a-menu-item key="2"> 报警列表</a-menu-item>
+            <a-menu-item key="3"> 资产管理</a-menu-item>
+            <a-menu-item key="4">运维管理</a-menu-item>
+            <a-menu-item key="5">系统设置</a-menu-item>
           </a-menu>
         </div>
       </div>
       <div class="header-right"></div>
-    </div>
-    <!-- 导航栏 -->
-    <div class="guideGrid">
-      <span>当前位置：</span>
-      <p v-if="levelArr.length == 1">
-        <span class="hignLightWord">{{ partitionedList[levelArr[0]].partitionName }}</span>
-      </p>
-      <p v-if="levelArr.length == 2">
-        <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
-        <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }}</span>
-      </p>
-      <p v-if="levelArr.length == 3">
-        <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
-        <span class="normalWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }} > </span>
-        <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].childPartition[levelArr[2]].partitionName }}</span>
-      </p>
     </div>
     <!-- 中心部分 -->
     <div class="insideWarper">
@@ -44,7 +28,6 @@
 
 <script>
   import navMenu from './homeComponents/navMenu';
-  import { mapGetters } from 'vuex';
 
   export default {
     name: 'Home',
@@ -54,22 +37,26 @@
     data() {
       return {
         routeData: [],
-        current: ['a'],
+        current: ['0'],
         levelArr: []
       };
     },
     watch:{
-      'currentPartitionLevel': function(n) {
-        let arr = n.split('-')
-        arr = arr.map( v => Number(v))
-        this.levelArr = arr
-        console.log('this.partitionedList');
-        console.log(this.partitionedList[this.levelArr[0]].partitionName);
-        console.log(this.levelArr.length);
+      'current': function(n){
+        console.log(n);
+        if(this.current[0] == '0'){
+          this.$router.push({
+            path: '/home/showControl'
+          })
+        }else if(this.current[0] == '1'){
+          this.$router.push({
+            path: '/home/dataMonitor'
+          })
+        }
+
       }
     },
     computed: {
-      ...mapGetters(['currentPartitionLevel', 'partitionedList']),
       host() {
         return location.origin;
       }
@@ -89,32 +76,11 @@
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
     background-size: 100% 100%;
-    .guideGrid{
-      display: flex;
-      align-items: center;
-      color: #787DB8;
-      width: 100%;
-      padding-left: 100px;
-      padding-top: .23622rem;
-      p{
-        margin: 0;
-      }
-      .normalWord{
-        color: #787DB8;
-        font-size: 12px;
-      }
-      .hignLightWord{
-        font-size: 12px;
-        color: #00C3FF;
-      }
-    }
     .insideWarper{
       height: 100%;
       max-height: 100%;
       overflow: hidden;
       width: 100vw;
-      padding: .23rem;
-      padding-top: 0.094488rem;
     }
     .header {
       display: flex;

@@ -9,37 +9,39 @@
         </el-checkbox-group>
       </div>
     </div>
-    <div class="tableGrid">
-      <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
-        <div class="botttom">
-          <p class="equipmentTitle">{{ typeList[index].groupName }}</p>
-          <div class="equipmentGrid">
-            <el-table
-              :data="totalData[index]"
-              height="100%"
-              style="width: 100%">
-              <el-table-column
-                prop="deviceName"
-                label="设备名称"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="deviceValue"
-                label="状态"
-              >
-              </el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <div class="operrateGrid">
-                    <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
-                      <span @click="handleEdit(el.id)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
-                      <span style="color: #009dd5" class="bar">|</span>
+    <div class="tabelWrapper" id="tabelWrapper_eq">
+      <div class="tableGrid">
+        <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
+          <div class="botttom">
+            <p class="equipmentTitle">{{ typeList[index].groupName }}</p>
+            <div class="equipmentGrid">
+              <el-table
+                :data="totalData[index]"
+                height="100%"
+                style="width: 100%">
+                <el-table-column
+                  prop="deviceName"
+                  label="设备名称"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="deviceValue"
+                  label="状态"
+                >
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <div class="operrateGrid">
+                      <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
+                        <span @click="handleEdit(el.id)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
+                        <span style="color: #009dd5" class="bar">|</span>
+                      </div>
                     </div>
-                  </div>
-                  <!-- <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">自动</span> -->
-                </template>
-              </el-table-column>
-            </el-table>
+                    <!-- <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">自动</span> -->
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
         </div>
       </div>
@@ -111,6 +113,15 @@ export default {
           groupId: el.id
         }
         this.$set(this.totalData, index, [])
+
+        this.$nextTick(() => {
+          let height = document.getElementById('tabelWrapper_eq').offsetHeight
+          let arr = document.getElementsByClassName('tableItem')
+          arr.forEach((v,i) => {
+            arr[i].style.height = height + 'px'
+          })
+        })
+
         this.WebSocketFun(obj,index)
       })
     },
@@ -175,11 +186,16 @@ export default {
       }
     }
   },
-  created(){
+  mounted(){
     if(this.partitionId != ''){
       this.initTypeList()
     }
-  }
+  },
+  // created(){
+  //   if(this.partitionId != ''){
+  //     this.initTypeList()
+  //   }
+  // }
 }
 </script>
 
@@ -245,14 +261,15 @@ export default {
   .el-table  .cell:nth-last-child(1){
     max-width: 200px;
   }
-  
+  .tabelWrapper{
+    flex: 1;
+    overflow: auto;
+  }
   .tableGrid{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-column-gap: 20px;
     max-width: 100%;
-    flex: 1;
-    overflow: auto;
     .tableItem{
       background: url(/img/surveillance.a11582f6.png) center center no-repeat;
       background-size: 100% 100%;

@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-03-11 19:12:22
+ * @LastEditTime: 2020-03-25 19:18:11
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: /iotmp-ui/src/router.js
+ */
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -32,6 +40,11 @@ const router =  new Router({
           path: 'showControl',
           component:  () => import('./views/showControl.vue'),
           name: 'showControl'
+        },
+        {
+          path: 'dataMonitor',
+          component:  () => import('./views/dataMonitor/index.vue'),
+          name: 'dataMonitor'
         }
       ]
     },
