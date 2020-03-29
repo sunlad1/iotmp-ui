@@ -17,8 +17,13 @@
         @select="handleSelect"
         background-color="#0A082A"
         text-color="#2DA2FD"
-        active-text-color="#00FFD8">
-        <el-menu-item :index="String(index)" v-for="(item,index) in [1,2,3,4,5,6,7]" :key="index">处理中心</el-menu-item>
+        active-text-color="#00FFD8"
+      >
+        <el-menu-item
+          :index="String(index)"
+          v-for="(item,index) in filterArr1"
+          :key="index"
+        >{{ item.groupName }}</el-menu-item>
       </el-menu>
     </div>
     <!-- 二级筛选  -->
@@ -29,15 +34,79 @@
       @select="handleSelect"
       background-color="#0A082A"
       text-color="#2DA2FD"
-      active-text-color="#00FFD8">
-      <el-menu-item :index="String(index)" v-for="(item,index) in [1,2,3,4,5,6,7]" :key="index">处理中心</el-menu-item>
+      active-text-color="#00FFD8"
+    >
+      <el-menu-item
+        :index="String(index)"
+        v-for="(item,index) in filterArr2"
+        :key="index"
+      >{{ item.deviceName }}</el-menu-item>
     </el-menu>
-    <div id="chartsGrid"
-         style="width: 500px;height: 500px;"></div>
+    <div class="monitorWrapper">
+      <!-- 表格数据 -->
+      <div class="monitorTableGrid" id="monitorTableGrid">
+        <div class="inGrid">
+          <div class="titleGrid" id="monitorGrid">
+            <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
+            <p>{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
+          </div>
+          <div class="dataGrid" id="dataHeight">
+            <el-table :height="tableHeight" :data="historyList" style="width: 100%">
+              <el-table-column prop="0" label="序号"></el-table-column>
+              <el-table-column prop="1" label="设备地址" width="150px"></el-table-column>
+              <el-table-column prop="2" label="温度"></el-table-column>
+              <el-table-column prop="2" label="湿度"></el-table-column>
+              <el-table-column prop="3" label="甲烷"></el-table-column>
+              <el-table-column prop="4" label="一氧化碳"></el-table-column>
+              <el-table-column prop="5" label="硫化氢"></el-table-column>
+              <el-table-column prop="6" label="氧气"></el-table-column>
+              <el-table-column prop="7" label="集水坑液位高度"></el-table-column>
+              <el-table-column prop="8" label="数据采集时间"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <div class="block" style="text-align:right">
+            <el-pagination
+              @current-change="handleCurrentChange"
+              :current-page.sync="pageNumber"
+              :page-size="10"
+              layout="total, prev, pager, next"
+              :total="totalDataNum"
+            ></el-pagination>
+          </div>
+        </div>
+      </div>
+      <div class="chartsGrid" id="echartsGridParent">
+        <div class="titleGrid">
+          <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
+          <p
+            style="margin-right:auto;"
+          >{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
+          <div>
+            <el-radio-group v-model="radio">
+              <el-radio
+                :label="item.subscribeId"
+                v-for="(item,index) in radioArr"
+                :key="index"
+              >{{ item.subscribeTitle }}</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+        <div id="chartsGrid"></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import {
+  getHistoryRecord,
+  getAllDeviceGroup,
+  getChartsDataKeys
+} from "@/api/dataMonitor";
+import { mapGetters } from "vuex";
+import { websoketURL } from "@/config/env";
+
 var echarts = require("echarts/lib/echarts");
 require("echarts/lib/chart/line");
 // 引入提示框和标题组件
@@ -46,40 +115,238 @@ require("echarts/lib/component/title");
 require("echarts/lib/component/dataZoom");
 require("echarts/lib/component/markPoint");
 require("echarts/lib/component/markLine");
+
+var data = [];
+var now = +new Date(1997, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var value = Math.random() * 1000;
+for (var i = 0; i < 1000; i++) {
+  data.push(randomData());
+}
+
+function randomData() {
+  now = new Date(+now + oneDay);
+  value = value + Math.random() * 21 - 10;
+  return {
+    name: now.toString(),
+    value: [
+      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/"),
+      Math.round(value)
+    ]
+  };
+}
+
 export default {
   data() {
     return {
-      activeIndex1: '0',
-      activeIndex2: '0'
+      activeIndex1: null,
+      activeIndex2: null,
+      filterArr1: [],
+      filterArr2: [],
+      historyList: [],
+      totalDataNum: 0,
+      pageNumber: 1,
+      tableHeight: "0",
+      wsObj: null,
+      radioArr: [],
+      radio: 0,
+      echartsData: [],
+      echartStyle: {
+        width: 0,
+        height: 0
+      }
     };
   },
-  created() {
+  computed: {
+    ...mapGetters(["partitionId"])
+  },
+  watch: {
+    activeIndex1: function(n) {
+      if (!n) return;
+      this.filterArr2 = this.filterArr1[Number(n)].deviceList;
+      this.activeIndex2 = "0";
+      this.getHistoryList();
+    },
+    activeIndex2: function(n) {
+      if (!n) return;
+      this.getGroupData();
+    },
+    partitionId: {
+      handler: function() {
+        this.getFilterData();
+      },
+      immediate: true
+    },
+    radio: function(n) {
+      if (!n) return;
+      // 类型改变重新渲染 echarts
+      this.setEchartsData();
+    }
+  },
+  mounted() {
     this.$nextTick(() => {
-      this.initEcharts();
+      setTimeout(() => {
+        // 覆盖table的高度
+        this.tableHeight = document.querySelector("#dataHeight").offsetHeight;
+        // 覆盖echarts的高度
+        let height = document.querySelector("#chartsGrid").offsetHeight;
+        let width = document.querySelector("#chartsGrid").offsetWidth;
+        document.querySelector("#chartsGrid").style.width = width;
+        document.querySelector("#chartsGrid").style.height = height;
+        // 赋值宽高后再绘制
+        this.initEcharts();
+      }, 500);
     });
   },
   methods: {
+    // 获取走势图数据
+    setEchartsData() {
+      if (this.wsObj) {
+        this.wsObj.onclose(true);
+      }
+
+      this.wsObj = new WebSocket(
+        `ws://${websoketURL}/ws/getMeterHistoryRecord?subscribeId=${
+          this.radioArr[this.radio].subscribeId
+        }&deviceId=${this.filterArr2[Number(this.activeIndex2)].id}`
+      );
+
+      this.wsObj.onopen = function() {
+        console.log("打开ws-setEchartsData");
+      };
+
+      this.wsObj.onmessage = res => {
+        this.echartsData = JSON.parse(res.data);
+        this.initEcharts();
+        console.log("this.echartsData");
+        console.log(this.echartsData);
+      };
+
+      this.wsObj.onclose = function(flag) {
+        // 关闭 websocket
+        this.echartsData = [];
+        if (!flag) {
+          this.errorBox();
+        }
+        console.log("关闭ws-setEchartsData");
+      };
+    },
+    errorBox() {
+      this.$notify({
+        title: "提示",
+        message: "数据监控出现异常，请刷新网页",
+        duration: 0
+      });
+    },
+    // 获取分组数据
+    async getGroupData() {
+      try {
+        let res = await getChartsDataKeys({
+          deviceId: this.filterArr2[Number(this.activeIndex2)].id
+        });
+        this.radioArr = res.data || [];
+        this.radio = this.radioArr.length > 0 && this.radioArr[0].subscribeId;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    handleCurrentChange(e) {
+      // 分页数据改变
+      this.pageNumber = e;
+      this.getHistoryList();
+    },
+    getHistoryList() {
+      getHistoryRecord({
+        deviceId: this.filterArr2[Number(this.activeIndex2)].id,
+        page: this.pageNumber
+      }).then(res => {
+        this.historyList = res.data.values;
+        this.totalDataNum = res.data.total;
+      });
+    },
+    getFilterData() {
+      // 当分区改变时 初始化所有变量
+      this.initAllVariable();
+      getAllDeviceGroup({
+        partitionId: this.partitionId
+      }).then(res => {
+        this.filterArr1 = res.data;
+        this.filterArr2 = res.data[0].deviceList;
+        this.activeIndex1 = "0";
+        this.activeIndex2 = "0";
+        this.radio = 0;
+      });
+    },
+    initAllVariable() {
+      this.activeIndex1 = null;
+      this.activeIndex2 = null;
+      this.radio = null;
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
     initEcharts() {
-      let myChart = echarts.init(document.getElementById('chartsGrid'));
+      console.log("xxx");
+      console.log(this.echartsData);
+
+      let myChart = echarts.init(document.getElementById("chartsGrid"));
       let option = {
+        grid: {
+          top: "20px",
+          left: "50px",
+          right: "15px",
+          bottom: "50px"
+        },
         xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          type: "time",
+          splitLine: {
+            show: false,
+            lineStyle: {
+                // 使用深浅的间隔色
+                color: '#5FC8E1'
+            }
+          },
+          axisLine:{
+              lineStyle:{
+                  color:'#5FC8E1'
+              }
+          }
         },
         yAxis: {
-          type: "value"
+          type: "value",
+          boundaryGap: [0, "100%"],
+          splitLine: {
+            show: true,
+            lineStyle: {
+                // 使用深浅的间隔色
+                color: '#5FC8E1'
+            }
+          },
+          axisLine:{
+              show: false,
+              lineStyle:{
+                  color:'#5FC8E1' //transparent
+              }
+          }
         },
         series: [
           {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: "line"
+            name: "模拟数据",
+            type: "line",
+            showSymbol: false,
+            hoverAnimation: false,
+            data: this.echartsData,
+            itemStyle: {
+                normal: {
+                    color: '#0363FF',
+                    lineStyle:{
+                      width: 4
+                    }
+                }
+            }
           }
         ]
       };
-
       myChart.setOption(option);
     }
   }
@@ -93,15 +360,104 @@ export default {
   max-height: 100%;
   overflow: hidden;
   padding-left: 25px;
-  .el-menu.el-menu--horizontal{
+  display: flex;
+  flex-direction: column;
+  .monitorWrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 0.23rem;
+    overflow: hidden;
+    .titleGrid {
+      padding-bottom: 0.12rem;
+      display: flex;
+      align-items: center;
+      padding-left: 0.15rem;
+      p {
+        font-size: 0.18rem;
+        margin: 0;
+      }
+      img {
+        width: 0.15rem;
+        height: 0.15rem;
+        margin-right: 0.11rem;
+      }
+    }
+    .monitorTableGrid {
+      flex: 0.5;
+      background: url("/static/imgs/dataMonitor/bk2.png") no-repeat;
+      background-size: 100% 100%;
+      overflow: auto;
+      .inGrid {
+        display: flex;
+        flex-direction: column;
+        padding: 0.12rem;
+        max-height: 100%;
+        height: 100%;
+      }
+      .dataGrid {
+        flex: 1;
+        overflow: hidden;
+      }
+    }
+    .chartsGrid {
+      flex: 0.5;
+      overflow: hidden;
+      background: url("/static/imgs/dataMonitor/bk1.png") no-repeat;
+      background-size: 100% 100%;
+      margin-top: 20px;
+      padding: 0.12rem;
+      display: flex;
+      flex-direction: column;
+      #chartsGrid {
+        flex: 1;
+        overflow: hidden;
+      }
+    }
+  }
+
+  .el-table thead {
+    color: #ddd;
+  }
+
+  .el-table::before {
+    height: 0 !important;
+  }
+  .el-table {
+    background: transparent !important;
+    color: #ddd !important;
+  }
+  .el-table td,
+  .is-leaf {
+    border-bottom: 1px solid #3625ab;
+  }
+
+  .el-table th {
+    border: none !important;
+  }
+
+  .el-table th,
+  .el-table tr {
+    background: transparent !important;
+  }
+
+  .el-table .cell {
+    white-space: nowrap;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .el-menu.el-menu--horizontal {
     border-bottom: 1px solid rgba(3, 99, 255, 0.3) !important;
   }
-  .el-menu--horizontal>.el-menu-item.is-active{
+  .el-menu--horizontal > .el-menu-item.is-active {
     border-bottom-color: transparent !important;
   }
-  .oneLevelFilter{
-    .el-menu--horizontal>.el-menu-item.is-active{
-      background-color: rgba(0,255,255,.1) !important;
+  .oneLevelFilter {
+    .el-menu--horizontal > .el-menu-item.is-active {
+      background-color: rgba(0, 255, 255, 0.1) !important;
     }
   }
 }

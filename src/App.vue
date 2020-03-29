@@ -131,5 +131,13 @@
     z-index: 10000 !important;
   }
 
+  .el-pagination button{
+    background: transparent !important;
+  }
+  .el-pager li{
+    background: transparent !important;
+    color: #787DB8;
+  }
+
 </style>
 
