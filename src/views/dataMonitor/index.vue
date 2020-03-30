@@ -23,7 +23,10 @@
           :index="String(index)"
           v-for="(item,index) in filterArr1"
           :key="index"
-        >{{ item.groupName }}</el-menu-item>
+        >
+        <!-- <img :src="item." alt=""> -->
+        {{ item.groupName }}
+        </el-menu-item>
       </el-menu>
     </div>
     <!-- 二级筛选  -->
