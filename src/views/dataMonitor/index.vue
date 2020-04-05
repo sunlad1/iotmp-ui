@@ -14,7 +14,7 @@
         :default-active="activeIndex1"
         class="el-menu-demo"
         mode="horizontal"
-        @select="handleSelect"
+        @select="handleSelect1"
         background-color="#0A082A"
         text-color="#2DA2FD"
         active-text-color="#00FFD8"
@@ -34,7 +34,7 @@
       :default-active="activeIndex2"
       class="el-menu-demo"
       mode="horizontal"
-      @select="handleSelect"
+      @select="handleSelect2"
       background-color="#0A082A"
       text-color="#2DA2FD"
       active-text-color="#00FFD8"
@@ -222,7 +222,6 @@ export default {
         this.echartsData = JSON.parse(res.data);
         this.initEcharts();
         console.log("this.echartsData");
-        console.log(this.echartsData);
       };
 
       this.wsObj.onclose = function(flag) {
@@ -285,13 +284,14 @@ export default {
       this.activeIndex2 = null;
       this.radio = null;
     },
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect1(key) {
+      this.activeIndex1 = String(key)
+    },
+    handleSelect2(key) {
+      this.activeIndex2 = String(key)
     },
     initEcharts() {
       console.log("xxx");
-      console.log(this.echartsData);
-
       let myChart = echarts.init(document.getElementById("chartsGrid"));
       let option = {
         grid: {

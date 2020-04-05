@@ -45,7 +45,12 @@ const router =  new Router({
           path: 'dataMonitor',
           component:  () => import('./views/dataMonitor/index.vue'),
           name: 'dataMonitor'
-        }
+        },
+        {
+          path: 'warnList',
+          component:  () => import('./views/warnList/index.vue'),
+          name: 'warnList'
+        },
       ]
     },
   ],

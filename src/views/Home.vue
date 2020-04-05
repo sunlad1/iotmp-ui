@@ -38,21 +38,38 @@
       return {
         routeData: [],
         current: ['0'],
-        levelArr: []
+        levelArr: [],
+        pages: [
+          {
+            name: '/home/showControl'
+          },
+          {
+            name: '/home/dataMonitor'
+          },
+          {
+            name: '/home/warnList'
+          }
+        ]
       };
     },
     watch:{
-      'current': function(n){
-        console.log(n);
-        if(this.current[0] == '0'){
-          this.$router.push({
-            path: '/home/showControl'
-          })
-        }else if(this.current[0] == '1'){
-          this.$router.push({
-            path: '/home/dataMonitor'
-          })
-        }
+      'current': function(){
+        this.$router.push({
+          path: Number(this.pages[this.current[0]])
+        })        
+        // if(this.current[0] == '0'){
+        //   this.$router.push({
+        //     path: '/home/showControl'
+        //   })
+        // }else if(this.current[0] == '1'){
+        //   this.$router.push({
+        //     path: '/home/dataMonitor'
+        //   })
+        // }else if(this.current[0] == '2'){
+        //   this.$router.push({
+        //     path: '/home/warnList'
+        //   })
+        // }
 
       }
     },
@@ -63,6 +80,7 @@
     },
     created() {
       this.routeData = this.$router.options.routes.filter(_ => _.meta);
+      this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
     },
     methods: {}
   };

@@ -86,7 +86,7 @@
   }
 
   table{
-    width: auto !important;
+    width: auto;
     td{
       div{
         white-space: nowrap;
