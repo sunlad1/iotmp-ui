@@ -180,6 +180,11 @@ export default {
       current: [0]
     };
   },
+  beforeDestroy(){
+    oWebControl.JS_RequestInterface({
+        funcName: "stopAllPreview"
+    });
+  },
   mounted() {
     let timer = null   //video-surveillance
     // let playWnd = document.getElementById('playWnd')
