@@ -26,3 +26,12 @@ export const deleteAsset = (obj) => {
       params: obj
     })
   }
+
+// 修改资源
+export const updateAsset = (obj) => {
+  return request({
+    url: '/property/update',
+    method: 'post',
+    data: obj
+  })
+}

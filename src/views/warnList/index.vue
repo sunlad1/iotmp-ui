@@ -58,12 +58,12 @@
                 <ul class="stepGrid">
                   <li v-for="(item,index) in alarmConfig.configList" :key="index">
                     <span class="activeColor">{{ item.subscribeTitle }}:</span>
-                    <span>上线</span>
+                    <span>上限</span>
                     <input type="text" :value="item.maxValue" @input="changeInput($event,index)">
                     <!-- <span class="activeColor">{{ item.maxValue }}</span> -->
                     <span>℃</span>
                     <span class="bar"></span>
-                    <span>下线</span>
+                    <span>下限</span>
                     <input type="text" :value="item.minValue">
                     <!-- <span class="activeColor">{{ item.minValue }}</span> -->
                     <span>℃</span>

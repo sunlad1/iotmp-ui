@@ -32,7 +32,7 @@
           </div>
           <el-button type="info" size="mini" @click="searchClicked">查询</el-button>
           <el-button type="info" size="mini" @click="clearSearch">重置</el-button>
-          <el-button type="primary" size="mini" @click="dialogTableVisible = true">新增</el-button>
+          <el-button type="primary" size="mini" @click="addClicked()">新增</el-button>
         </div>
         <div class="dataGrid" id="historyDataHeight">
           <el-table :height="historyTableHeight" :data="historyAlarmList" style="width: 100%">
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { queryList, addInspection, deleteAsset } from "@/api/assetManage";
+import { queryList, addInspection, deleteAsset, updateAsset } from "@/api/assetManage";
 import { getAllUser } from "@/api/user";
 
 export default {
@@ -148,6 +148,7 @@ export default {
         deviceName: "",
         deviceStatus: ""
       },
+      isAdd: true,
       statusArr: [
         {
           value: "0",
@@ -209,6 +210,10 @@ export default {
         });
       });
     },
+    addClicked(){
+      this.dialogTableVisible = true;
+      this.isAdd = true
+    },
     clearDialogSubmit() {
       this.dialogTableVisible = false;
       for (const key in this.form) {
@@ -217,6 +222,9 @@ export default {
     },
     onSubmit() {
       for (const key in this.form) {
+        if(key === 'id'){
+          continue
+        }
         if (this.form[key].trim() === "") {
           this.$message({
             type: "info",
@@ -224,6 +232,19 @@ export default {
           });
           return;
         }
+      }
+      if(!this.isAdd){
+        updateAsset(this.form).then(() => {
+          this.$message({
+            type: "info",
+            message: "修改成功"
+          });
+          this.dialogTableVisible = false;
+          for (const key in this.form) {
+            this.form[key] = "";
+          }
+        })
+        return
       }
       addInspection(this.form)
         .then(() => {
@@ -249,9 +270,20 @@ export default {
     clearSearch() {
       this.curPersonList = "";
       this.valueTime = "";
-      this.searchClicked();
+      this.searchPage.page = 1;
+      this.historyAlarmList = [];
+      this.getHistoryList();
     },
-    handleEdit() {},
+    handleEdit(index,row) {
+      this.isAdd = false
+      this.form.id = row.id
+      this.form.organization = row.organization
+      this.form.typeCode = row.typeCode
+      this.form.typeName = row.typeName
+      this.form.deviceName = row.deviceName
+      this.form.deviceStatus = row.deviceStatus === '已激活' ? '0' : '1' 
+      this.dialogTableVisible = true;
+    },
     searchClicked() {
       // 重新搜索
       if (this.curPersonList === "" && this.valueTime === "") {

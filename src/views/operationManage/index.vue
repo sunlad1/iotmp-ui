@@ -198,7 +198,9 @@ export default {
     clearSearch(){
       this.curPersonList = ''
       this.valueTime = []
-      this.searchClicked()
+      this.searchPage.page = 1;
+      this.historyAlarmList = [];
+      this.getHistoryList();
     },
     handleEdit(){
 
