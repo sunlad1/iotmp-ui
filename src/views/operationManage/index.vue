@@ -205,7 +205,7 @@ export default {
     },
     searchClicked(){
       // 重新搜索 
-      if(this.curPersonList === '' && this.valueTime === ''){
+      if(this.curPersonList === '' && this.valueTime.length <= 0){
         return
       }
       if(this.curPersonList === ''){
