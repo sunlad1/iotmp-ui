@@ -48,29 +48,22 @@
           },
           {
             name: '/home/warnList'
-          }
+          },
+          {
+            name: '/home/assetManage'
+          },
+          {
+            name: '/home/operationManage'
+          },
         ]
       };
     },
     watch:{
       'current': function(){
+        console.log(Number(this.current[0]));
         this.$router.push({
-          path: Number(this.pages[this.current[0]])
+          path: this.pages[Number(this.current[0])].name
         })        
-        // if(this.current[0] == '0'){
-        //   this.$router.push({
-        //     path: '/home/showControl'
-        //   })
-        // }else if(this.current[0] == '1'){
-        //   this.$router.push({
-        //     path: '/home/dataMonitor'
-        //   })
-        // }else if(this.current[0] == '2'){
-        //   this.$router.push({
-        //     path: '/home/warnList'
-        //   })
-        // }
-
       }
     },
     computed: {

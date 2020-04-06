@@ -51,6 +51,16 @@ const router =  new Router({
           component:  () => import('./views/warnList/index.vue'),
           name: 'warnList'
         },
+        {
+          path: 'assetManage',
+          component:  () => import('./views/assetManage/index.vue'),
+          name: 'assetManage'
+        },
+        {
+          path: 'operationManage',
+          component:  () => import('./views/operationManage/index.vue'),
+          name: 'operationManage'
+        },
       ]
     },
   ],
