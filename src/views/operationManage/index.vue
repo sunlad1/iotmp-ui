@@ -7,7 +7,6 @@
           <p style="margin-right:auto">历史报警信息</p>
           <div class="searchWrapper">
             <p>巡检时间</p>
-
             <el-date-picker
               v-model="valueTime"
               type="datetimerange"
@@ -30,7 +29,8 @@
             <!-- <el-input v-model="historySearch" placeholder="请输入设备昵称"></el-input> -->
           </div>
           <el-button type="info" size="mini" @click="searchClicked">查询</el-button>         
-          <el-button type="info" plain size="mini" @click="clearSearch">重置</el-button>         
+          <el-button type="info" size="mini" @click="clearSearch">重置</el-button>         
+          <el-button type="primary" size="mini" @click="dialogTableVisible = true">新增</el-button>         
         </div>
         <div class="dataGrid" id="historyDataHeight">
           <el-table :height="historyTableHeight" :data="historyAlarmList" style="width: 100%">
@@ -58,16 +58,70 @@
         </div>
       </div>      
     </div>
+
+ 
+<el-dialog :visible.sync="dialogTableVisible" :fullscreen="true">
+  <div class="fullWrapper">
+    <div class="addDialog">
+      <div class="closeBtn" @click="closeDialog"></div>
+      <div class="dialogHeader">
+          <img src="/static/imgs/operationManage/operationIcon.png" alt />
+          <p style="margin-right:auto">运维信息新增</p>
+      </div>
+      <div class="dialogForm">
+        <el-form ref="form" :model="form" label-width="100px">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="巡检地址">
+                <el-input placeholder="请输入" v-model="form.location"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="巡检人">
+                <el-select v-model="form.inspectionUsrId" placeholder="请选择">
+                  <el-option
+                    v-for="item in personList"
+                    :key="item.id"
+                    :label="item.realName"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="巡检事项说明">
+                <el-input type="textarea" placeholder="请输入" v-model="form.inspectionExplain"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+      <div class="operationWrapper">
+        <el-button size="mini" type="primary" @click="onSubmit">提交</el-button>
+        <el-button size="mini" @click="clearDialogSubmit">取消</el-button>
+      </div>
+    </div>
+  </div>
+  
+</el-dialog>
+
+
+
 	</div>
 </template>
 
 <script>
-import { queryList } from '@/api/operationManage'
+import { queryList, addInspection } from '@/api/operationManage'
 import { getAllUser } from '@/api/user'
 
 export default {
 	data(){
 		return {
+      form:{
+        location: '',
+        inspectionUsrId: '',
+        inspectionExplain: ''
+      },
 			historyAlarmList: [],
 			totalDataNum: 0,
 			inspectPerson: '',
@@ -77,6 +131,7 @@ export default {
       valueTime: [],
       curPersonList: '',
       pageSize: 0,
+      dialogTableVisible: false,
 			searchPage: {
         page: 1
       },
@@ -105,6 +160,41 @@ export default {
     },
   },
 	methods:{
+    clearDialogSubmit(){
+      this.dialogTableVisible = false
+      for (const key in this.form) {
+        this.form[key] = ''
+      }
+    },
+    onSubmit(){
+      for (const key in this.form) {
+        if(this.form[key].trim() === ''){
+          this.$message({
+            type: 'info',
+            message: '请完善信息'
+          }) 
+          return
+        }
+      }
+      addInspection(this.form).then(() => {
+        this.$message({
+          type: 'info',
+          message: '新增成功'
+        });   
+        this.dialogTableVisible = false
+      for (const key in this.form) {
+        this.form[key] = ''
+      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '新增失败，请重试'
+        });   
+      })
+    },
+    closeDialog(){
+      this.dialogTableVisible = false
+    },
     clearSearch(){
       this.curPersonList = ''
       this.valueTime = []
@@ -159,6 +249,75 @@ export default {
   height: 100%;
   max-height: 100%;
   overflow: hidden;
+  .fullWrapper{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .operationWrapper{
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 0.3rem;
+    }
+    .dialogForm{
+      box-sizing: border-box;
+      padding-left: 0.6rem;
+      padding-right: 0.3rem;
+      padding-top: 0.3rem;
+    }
+    .dialogHeader{
+      padding-top: 0.23rem;
+      display: flex;
+      align-items: center;
+      padding-left: 0.3rem;
+      input{
+        background-color: transparent;
+      }
+      img {
+        width: 0.2rem;
+        height: 0.2rem;
+        margin-right: 0.11rem;
+      }
+      p {
+        color: #119BD8;
+        font-size: 0.15rem;
+        margin: 0;
+      } 
+    }
+    .addDialog{
+      width: 4.87rem;
+      height: 2.51rem;
+      background: url("/static/imgs/operationManage/addBk.png") center center no-repeat;
+      background-size: 100% 100%;
+      position: relative;
+      textarea{
+        background: transparent;
+      }
+      .closeBtn{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: .8rem;
+        height: .6rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .el-dialog{
+    background: transparent;
+  }
+  .el-dialog__body{
+    padding: 0;
+  }
+  .el-dialog__header{
+    height: 0;
+    padding: 0;
+    .el-dialog__headerbtn{
+      display: none;
+    }
+  }
   .dataGrid{
     flex: 1;
   }
