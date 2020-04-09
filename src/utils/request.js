@@ -2,6 +2,7 @@
 import {Message} from 'element-ui'
 import axios from 'axios'
 
+
 axios.defaults.timeout = 10000;
 //返回其他状态吗
 axios.defaults.validateStatus = function (status) {
@@ -18,9 +19,15 @@ axios.interceptors.request.use(config => {
 });
 //HTTPresponse拦截
 axios.interceptors.response.use(res => {
-  const status = res.data.code || 200
-  const message = res.data.msg || '未知错误';
+  const status = res.status || 200
+  const message = res.statusText || '未知错误';
   // 如果请求为非200否者默认统一处理
+  console.log('status');
+  console.log(status);
+  
+  if(status == 302){
+    return Promise.reject('302')
+  }
   if (status !== 200) {
     Message({
       message: message,

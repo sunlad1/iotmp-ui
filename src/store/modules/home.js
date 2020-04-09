@@ -1,13 +1,19 @@
 import { 
   SET_PARTITIONID,
   SET_PARTITION_LIST,
-  SET_CURRENT_PARTITION_LEVEL
+  SET_CURRENT_PARTITION_LEVEL,
+  SET_USER_INFO
 } from '../types'
+
+
+console.log(localStorage.getItem('userInfo'));
+console.log(typeof localStorage.getItem('userInfo'));
 
 const state = {
   partitionId: '',   // 当前分区id
   partitionedList: [], // 分区数据数组
-  currentPartitionLevel: '' // 当前分区的层级
+  currentPartitionLevel: '', // 当前分区的层级
+  userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}')
 }
 
 const mutations = {
@@ -21,10 +27,17 @@ const mutations = {
   },
   [SET_PARTITION_LIST] (state, val) {
     state.partitionedList = val
+  },
+  [SET_USER_INFO] (state, val){
+    state.userInfo = val
   }
 }
 
 const actions = {
+  setUserInfo({commit}, val){
+    commit('SET_USER_INFO', val)
+    localStorage.setItem('userInfo',JSON.stringify(val))
+  },
   setCurrentPartitionLevel({commit},val) {
     commit('SET_CURRENT_PARTITION_LEVEL', val)
   },
@@ -37,6 +50,9 @@ const actions = {
 }
 
 const getters = {
+  getUserInfo(state){
+    return state.userInfo
+  },
   // 获取当前选择的层级level
   getCurrentPartitionLevel(state){
     return state.currentPartitionLevel

@@ -17,7 +17,13 @@
           </a-menu>
         </div>
       </div>
-      <div class="header-right"></div>
+      <div class="header-right">
+        <span>操作账号:</span>
+        <span>{{ userInfo.realName }}</span>
+        <span>|</span>
+        <span class="active">修改密码</span>
+        <i @click="logOut" class="cursor el-icon-switch-button" color="#035CFF"></i>
+      </div>
     </div>
     <!-- 中心部分 -->
     <div class="insideWarper">
@@ -28,6 +34,8 @@
 
 <script>
   import navMenu from './homeComponents/navMenu';
+  import { mapGetters } from 'vuex';
+  import { logout } from '@/api/user';
 
   export default {
     name: 'Home',
@@ -55,6 +63,9 @@
           {
             name: '/home/operationManage'
           },
+          {
+            name: '/home/systemManage'
+          }
         ]
       };
     },
@@ -67,6 +78,7 @@
       }
     },
     computed: {
+      ...mapGetters(['userInfo']),
       host() {
         return location.origin;
       }
@@ -75,7 +87,15 @@
       this.routeData = this.$router.options.routes.filter(_ => _.meta);
       this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
     },
-    methods: {}
+    methods: {
+      logOut(){
+        logout().then(() => {
+          this.$router.push({
+            path: '/loginPage'
+          })
+        })
+      }
+    }
   };
 </script>
 <style lang="less" scoped>
@@ -128,7 +148,24 @@
         }
       }
       .header-right {
-
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: .433rem;
+        .cursor{
+          cursor: pointer;
+        }
+        .active{
+          color: #035CFF;
+          text-decoration: underline;
+        }
+        span{
+          color: #fff;
+          padding-right: .157rem;
+          font{
+            size: .125rem;
+          }
+        }
       }
     }
   }

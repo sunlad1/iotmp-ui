@@ -8,3 +8,12 @@ export const getAllUser = (obj) => {
     params: obj
   })
 }
+
+//  获取所有用户列表
+export const logout = (obj) => {
+  return request({
+    url: '/system/logout',
+    method: 'get',
+    params: obj
+  })
+}

@@ -8,6 +8,7 @@
  */
 import Vue from 'vue'
 import Router from 'vue-router'
+import { getAllUser } from '@/api/user'
 
 Vue.use(Router)
 
@@ -29,7 +30,12 @@ const router =  new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/loginPage'
+    },
+    {
+      path: '/loginPage',
+      name: 'loginPage',
+      component: () => import('./views/loginPage/login.vue'),
     },
     {
       path: '/home',
@@ -61,10 +67,32 @@ const router =  new Router({
           component:  () => import('./views/operationManage/index.vue'),
           name: 'operationManage'
         },
+        {
+          path: 'systemManage',
+          component:  () => import('./views/systemManage/index.vue'),
+          name: 'systemManage'
+        },
       ]
     },
   ],
 });
+
+router.beforeEach((to,form,next) => {
+  getAllUser().then(() => {
+    next()
+  }).catch(err =>{
+    if(err == 302){
+      if(to.path === '/loginPage'){
+        next()
+      }else{
+        next({
+          name: 'loginPage'
+        })
+      }
+    }
+    next()
+  })
+})
 
 
 export default router
