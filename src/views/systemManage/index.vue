@@ -79,7 +79,7 @@
                     <el-input placeholder="请输入" v-model="form.tel"></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12" v-if="userInfo.roleId == 0">
                   <el-form-item label="账户角色">
                     <el-select v-model="form.roleId" placeholder="请选择">
                       <el-option
@@ -107,6 +107,7 @@
 <script>
 import { getAllUser } from "@/api/user";
 import { queryList, resetPasswd, deleteUser, updateUser, addUser } from "@/api/systemManage";
+  import { mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -143,12 +144,21 @@ export default {
     };
   },
   created() {
+    console.log('this.userInfo.roleId');
+    console.log(this.userInfo.roleId);
+    
+    if(this.userInfo.roleId != 0){
+      delete this.form.roleId
+    }
     // 初始化巡检列表
     this.getHistoryList();
     // 初始化用户列表
     getAllUser().then(res => {
       this.personList = res.data;
     });
+  },
+  computed:{
+      ...mapGetters(['userInfo']),
   },
   mounted() {
     this.$nextTick(() => {
@@ -251,7 +261,9 @@ export default {
       this.form.username = row.username
       this.form.realName = row.realName
       this.form.tel = row.tel
-      this.form.roleId = row.roleId === '系统管理员' ? '0' : '1' 
+      if(this.userInfo.roleId == 0){
+        this.form.roleId = row.roleId === '系统管理员' ? '0' : '1' 
+      }
       this.dialogTableVisible = true;
     },
     searchClicked() {

@@ -21,7 +21,7 @@
         <span>操作账号:</span>
         <span>{{ userInfo.realName }}</span>
         <span>|</span>
-        <span class="active">修改密码</span>
+        <span class="active cursor">修改密码</span>
         <i @click="logOut" class="cursor el-icon-switch-button" color="#035CFF"></i>
       </div>
     </div>

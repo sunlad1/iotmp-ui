@@ -72,6 +72,11 @@ const router =  new Router({
           component:  () => import('./views/systemManage/index.vue'),
           name: 'systemManage'
         },
+        {
+          path: 'welcomePage',
+          component:  () => import('./views/welcome/index.vue'),
+          name: 'welcomePage'
+        }
       ]
     },
   ],

@@ -59,6 +59,9 @@ import { getPartitionList } from '@/api/home'
       }
     },
     created(){
+      if(this.$route.query.isCollapse){
+        this.isCollapse = false
+      }
       getPartitionList().then(res => {
         this.menuList = res.data
         // 存储数据到 store 

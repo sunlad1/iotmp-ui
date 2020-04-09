@@ -41,7 +41,7 @@ export default {
 			}).then(res => {
 				this.$store.dispatch('setUserInfo', res.data)
 				this.$router.push({
-					path: '/home'
+					path: '/home/welcomePage?isCollapse=true'
 				})
 			})
 		}
