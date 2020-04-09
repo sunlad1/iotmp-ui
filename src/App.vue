@@ -41,6 +41,15 @@
     height: 100%;
   }
 
+  .el-message--info{
+    z-index: 100001 !important;
+    background: #000 !important;
+    border: 1px solid #00C3FF !important;
+    p{
+      color: #00C3FF !important;
+    }
+  }
+
   .mainTitle{
     font-size: 0.18rem !important;
   }

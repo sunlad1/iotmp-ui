@@ -144,9 +144,6 @@ export default {
     };
   },
   created() {
-    console.log('this.userInfo.roleId');
-    console.log(this.userInfo.roleId);
-    
     if(this.userInfo.roleId != 0){
       delete this.form.roleId
     }
