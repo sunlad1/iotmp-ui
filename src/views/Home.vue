@@ -58,6 +58,30 @@
       </template>
     </dialogBox>
 
+
+    <!-- 设别告警列表 -->
+
+    <div class="equipmentWarnFixed" v-if="isWarnBox">
+      <div class="closeBtn" @click="closeWarnDialog"></div>
+      <div class="leftComtop">
+        <img src="/static/imgs/home_icon1.png" alt />
+        <p>设备告警列表</p>
+      </div>
+      <div class="botttom" style="flex: 1;overflow:auto;">
+        <el-table height="100%" :data="alarmList" style="width: 100%">
+          <el-table-column prop="alarmDeviceName" label="报警名称"></el-table-column>
+          <el-table-column prop="alarmType" label="报警类型"></el-table-column>
+          <el-table-column prop="alarmAttr" label="源属性"></el-table-column>
+          <el-table-column prop="alarmDescribe" label="报警描述"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5;cursor:pointer">更多</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -66,7 +90,7 @@
   import { mapGetters } from 'vuex';
   import { logout, changePasswd } from '@/api/user';
   import dialogBox from '@/components/dialogBox'
-
+  import { websoketURL } from "@/config/env";
   export default {
     name: 'Home',
     components: {
@@ -75,6 +99,7 @@
     },
     data() {
       return {
+        isWarnBox: false,
         form:{
           oldPasswd: '',
           newPasswd: '',
@@ -84,6 +109,7 @@
         routeData: [],
         current: ['0'],
         levelArr: [],
+        wsLeftArr: [],
         pages: [
           {
             name: '/home/showControl'
@@ -112,10 +138,16 @@
         this.$router.push({
           path: this.pages[Number(this.current[0])].name
         })        
-      }
+      },
+      partitionId: function(n) {
+        if (n != "") {
+          this.alarmList = [];
+          this.setAlarmList();
+        }
+      },
     },
     computed: {
-      ...mapGetters(['userInfo']),
+      ...mapGetters(['userInfo','partitionId']),
       host() {
         return location.origin;
       }
@@ -123,8 +155,47 @@
     created() {
       this.routeData = this.$router.options.routes.filter(_ => _.meta);
       this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
+
+      // 设置监听
+
     },
     methods: {
+      handleEdit(){
+        this.$router.push({
+          path: '/home/warnList'
+        })
+      },
+      setAlarmList() {
+        if (this.wsLeftArr[0]) {
+          this.wsLeftArr[0].onclose(true);
+        }
+
+        this.wsLeftArr[0] = new WebSocket(
+          `ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${this.partitionId}`
+        );
+        this.wsLeftArr[0].onopen = function() {
+          console.log("打开ws-setAlarmList");
+        };
+
+        this.wsLeftArr[0].onmessage = res => {
+          this.alarmList = JSON.parse(res.data);
+          if(this.alarmList.length > 0){
+            this.isWarnBox = true
+          }
+        };
+
+        this.wsLeftArr[0].onclose = function(flag) {
+          // 关闭 websocket
+          this.alarmList = [];
+          if (!flag) {
+            this.errorBox();
+          }
+          console.log("关闭ws-setAlarmList");
+        };
+      },
+      closeWarnDialog(){
+        this.isWarnBox = false
+      },
       closeDialog(){
         this.clearDialogSubmit()
       },
@@ -183,6 +254,52 @@
     align-items: center;
     background: url("./../assets/images/bg.jpg") center center no-repeat;
     background-size: 100% 100%;
+
+
+  .equipmentWarnFixed {
+    z-index: 999999;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    height: 2.28rem;
+    width: 4.7rem;
+    background: url('/static/imgs/loginPage/warnBk.png') no-repeat;
+    // background: url("/static/imgs/bk_2.png") center center no-repeat;
+    // background-size: contain;
+    background-size: 100% 100%;
+    padding: .31rem .51rem;
+    display: flex;
+    flex-direction: column;
+    .closeBtn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0.8rem;
+      height: 0.6rem;
+      cursor: pointer;
+    }
+    .botttom{
+      padding: 0.07rem 0.15rem;
+    }
+    .leftComtop {
+      display: flex;
+      align-items: center;
+      padding: 0.07rem 0.15rem;
+      padding-top: 0;
+      img {
+        width: 0.15rem;
+        height: 0.15rem;
+        margin-right: 0.11rem;
+      }
+      p {
+        color: #00a0d8;
+        font-size: 0.125rem;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
     .insideWarper{
       height: 100%;
       max-height: 100%;
