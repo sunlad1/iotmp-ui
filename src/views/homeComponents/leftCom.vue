@@ -39,7 +39,7 @@
                 <span>{{ item.deviceValue }}{{ item.valueUnitName }}</span>
               </div>
 
-              <div class="item" style="color: 0e68f6;padding-right:.1rem;" v-else>查看更多分组信息 >></div>
+              <div class="item" @click="searchMore" style="color: 0e68f6;padding-right:.1rem;cursor:pointer" v-else>查看更多分组信息 >></div>
             </div>
           </div>
         </div>
@@ -58,12 +58,19 @@
           <el-table-column prop="alarmDescribe" label="报警描述"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">更多</span>
+              <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5;cursor:pointer">更多</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+
+    <!-- 监控list -->
+    <monitorList 
+      :dialogTableVisible="dialogTableVisible"
+      :options="options"
+      @closeDialog="closeDialog"
+    ></monitorList>
   </div>
 </template>
 
@@ -71,10 +78,12 @@
 import { websoketURL } from "@/config/env";
 import { getMeterGroups } from "@/api/home";
 import { mapGetters } from "vuex";
+import monitorList from '@/components/monitorList'
 
 export default {
   data() {
     return {
+      dialogTableVisible: false,
       groupVal: "",
       alarmList: [],
       meterList: {},
@@ -82,6 +91,9 @@ export default {
       wsLeftArr: [],
       options: []
     };
+  },
+  components: {
+    monitorList
   },
   computed: {
     ...mapGetters(["partitionId"])
@@ -104,6 +116,17 @@ export default {
     }
   },
   methods: {
+    handleEdit(){
+      this.$router.push({
+        path: '/home/warnList'
+      })
+    },
+    searchMore(){
+      this.dialogTableVisible = true
+    },
+    closeDialog(){
+      this.dialogTableVisible = false
+    },
     async initMeterList() {
       // 需要获取环控仪表的分组列表再请求数据
       try {

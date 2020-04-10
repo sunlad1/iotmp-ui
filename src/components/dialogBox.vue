@@ -27,9 +27,9 @@ export default {
         }
     },
     props:{
-        dialogTableVisible: {
-            type: Boolean
-        }
+      dialogTableVisible: {
+          type: Boolean
+      }
     },
     methods:{
         closeDialog(){

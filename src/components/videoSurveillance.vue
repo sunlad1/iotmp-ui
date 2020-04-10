@@ -181,6 +181,7 @@ export default {
     };
   },
   beforeDestroy(){
+    this.closeWindow()
     oWebControl.JS_RequestInterface({
         funcName: "stopAllPreview"
     });
@@ -206,6 +207,19 @@ export default {
     })
   },
   methods: {
+    closeWindow() {
+      if (oWebControl != null) {
+        oWebControl.JS_HideWnd(); // 先让窗口隐藏，规避可能的插件窗口滞后于浏览器消失问题
+        oWebControl.JS_Disconnect().then(
+          () => {
+            // 断开与插件服务连接成功
+          },
+          () => {
+            // 断开与插件服务连接失败
+          }
+        );
+      }
+    },
     handleChange(value) {
       console.log(`selected ${value}`);
     }
