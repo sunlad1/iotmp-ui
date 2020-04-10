@@ -66,15 +66,15 @@
                     <span>下限</span>
                     <input type="text" :value="item.minValue">
                     <!-- <span class="activeColor">{{ item.minValue }}</span> -->
-                    <span>℃</span>
+                    <span>{{ item.unitName }}</span>
                   </li>
                 </ul>
               </div>
               <div v-else class="stepWarpper">
                 <p class="title activeColor">是否报警：</p>
                 <div style="padding-inline-start: 20px !important;">
-                  <el-radio v-model="isWarn" label="1">是</el-radio>
-                  <el-radio v-model="isWarn" label="0">否</el-radio>
+                  <el-radio v-model="isWarn" label="0">是</el-radio>
+                  <el-radio v-model="isWarn" label="1">否</el-radio>
                 </div>
               </div>
             </el-timeline-item>

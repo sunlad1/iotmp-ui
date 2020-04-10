@@ -55,7 +55,7 @@
           </div>
           <div class="dataGrid" id="dataHeight">
             <el-table :height="tableHeight" :data="historyList" style="width: 100%">
-              <el-table-column v-for="(item,index) in tableList" :key="index" :prop="index" :label="item"></el-table-column>
+              <el-table-column v-for="(item,index) in tableList" :key="index" :prop="String(index)" :label="item"></el-table-column>
               <!-- <el-table-column prop="0" label="序号"></el-table-column>
               <el-table-column prop="1" label="设备地址" width="150px"></el-table-column>
               <el-table-column prop="2" label="温度"></el-table-column>
