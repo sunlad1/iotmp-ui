@@ -55,7 +55,8 @@
           </div>
           <div class="dataGrid" id="dataHeight">
             <el-table :height="tableHeight" :data="historyList" style="width: 100%">
-              <el-table-column prop="0" label="序号"></el-table-column>
+              <el-table-column v-for="(item,index) in tableList" :key="index" :prop="index" :label="item"></el-table-column>
+              <!-- <el-table-column prop="0" label="序号"></el-table-column>
               <el-table-column prop="1" label="设备地址" width="150px"></el-table-column>
               <el-table-column prop="2" label="温度"></el-table-column>
               <el-table-column prop="2" label="湿度"></el-table-column>
@@ -64,7 +65,7 @@
               <el-table-column prop="5" label="硫化氢"></el-table-column>
               <el-table-column prop="6" label="氧气"></el-table-column>
               <el-table-column prop="7" label="集水坑液位高度"></el-table-column>
-              <el-table-column prop="8" label="数据采集时间"></el-table-column>
+              <el-table-column prop="8" label="数据采集时间"></el-table-column> -->
             </el-table>
           </div>
           <!-- 分页 -->
@@ -142,6 +143,7 @@ function randomData() {
 export default {
   data() {
     return {
+      tableList:[],
       activeIndex1: null,
       activeIndex2: null,
       filterArr1: [],
@@ -264,6 +266,7 @@ export default {
       }).then(res => {
         this.historyList = res.data.values;
         this.totalDataNum = res.data.total;
+        this.tableList = res.data.subscribeTitles
       });
     },
     getFilterData() {

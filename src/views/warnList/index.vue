@@ -61,7 +61,7 @@
                     <span>上限</span>
                     <input type="text" :value="item.maxValue" @input="changeInput($event,index)">
                     <!-- <span class="activeColor">{{ item.maxValue }}</span> -->
-                    <span>℃</span>
+                    <span>{{ item.unitName }}</span>
                     <span class="bar"></span>
                     <span>下限</span>
                     <input type="text" :value="item.minValue">
@@ -117,7 +117,26 @@
             <el-table-column prop="alarmDescribe" label="报警描述"></el-table-column>
             <el-table-column prop="startTs" label="开始报警时间"></el-table-column>
             <el-table-column prop="endTs" label="解除报警时间"></el-table-column>
-            <el-table-column prop="handleLog" label="日志"></el-table-column>
+
+
+            <el-table-column
+              label="日志"
+              width="180">
+              <template slot-scope="scope">
+                <!-- <el-tooltip class="item" effect="dark" :content="scope.row.handleLog" placement="top-start">
+                  <div slot="reference" class="name-wrapper">
+                    <p>{{ scope.row.handleLog }}</p>
+                  </div>                  
+                </el-tooltip> -->
+                
+                <el-popover trigger="hover" placement="top">
+                  <p>{{ scope.row.handleLog }}</p>
+                  <div slot="reference" class="name-wrapper">
+                    <p>{{ scope.row.handleLog }}</p>
+                  </div>
+                </el-popover>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <!-- 分页 -->
@@ -132,6 +151,28 @@
         </div>
       </div>      
     </div>
+
+
+    <!-- 弹窗输入记录内容 -->
+
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        >
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="textarea">
+          </el-input>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="confirmRecord">确 定</el-button>
+          </span>
+      </el-dialog>
+
+
   </div>
 </template>
 
@@ -144,6 +185,9 @@ export default {
   name: "warnList",
   data() {
     return {
+      textarea: '',
+      currentId: '',
+      dialogVisible: false,
       historySearch: '',
       alarmConfig: {},
       alarmList: [],
@@ -181,6 +225,11 @@ export default {
     };
   },
   watch:{
+    'dialogVisible': function(n){
+      if(!n){
+        this.textarea = ''
+      }
+    },
     'isWarn': function(n){
       if(n == 0){
         this.alarmConfig.disabled = false
@@ -197,6 +246,10 @@ export default {
     },
     getHistoryList(){
       getAlarmRecord(this.searchPage).then(res => {
+        (res.data.content || []).map(v => {
+          v.startTs = new Date(v.startTs).format("yyyy-MM-dd hh:mm:ss")
+          v.endTs = new Date(v.endTs).format("yyyy-MM-dd hh:mm:ss")
+        })
         this.historyAlarmList = [...this.historyAlarmList,...res.data.content]
         this.totalDataNum = res.data.totalElements;
       })
@@ -268,27 +321,48 @@ export default {
         console.log(res + '解除成功');
       })
     },
-    logHandleEdit(index,row){
-      let that = this
-      this.$prompt('请输入距离内容', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(({ value }) => {
-        recordLog({
-          alarmLog: value,
-          alarmId: row.id
-        }).then(() => {
-          that.$message({
-            type: 'success',
-            message: '提交成功'
-          });
-        })
-      }).catch(() => {
-        that.$message({
-          type: 'info',
-          message: '取消输入'
-        });       
+    confirmRecord(){
+      if(this.textarea.trim == ''){
+        this.$message({
+          type: 'error',
+          message: '内容不能为空'
+        });   
+        return
+      }
+      recordLog({
+        alarmLog: this.textarea,
+        alarmId: this.currentId
+      }).then(() => {
+        this.dialogVisible = false
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
       })
+    },
+    logHandleEdit(index,row){
+      this.dialogVisible = true
+      this.currentId = row.id
+      // let that = this
+      // this.$prompt('请输入记录内容', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      // }).then(({ value }) => {
+      //   recordLog({
+      //     alarmLog: value,
+      //     alarmId: row.id
+      //   }).then(() => {
+      //     that.$message({
+      //       type: 'success',
+      //       message: '提交成功'
+      //     });
+      //   })
+      // }).catch(() => {
+      //   that.$message({
+      //     type: 'info',
+      //     message: '取消输入'
+      //   });       
+      // })
     },
     relieveHandleEdit(index,row){
       this.alarmId = row.id
@@ -358,6 +432,16 @@ export default {
 </script>
 
 <style lang="less">
+  .popper__arrow::after{
+    border-top-color: #009dd5 !important;
+  }
+  .el-popover{
+    background: rgba(0,0,0,.5) !important;
+    border: 1px solid #009dd5 !important;
+    P{
+      color: #fff !important;
+    }
+  }
 .warnListContainer {
   display: flex;
   flex-direction: column;

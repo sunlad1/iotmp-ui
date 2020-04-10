@@ -1,7 +1,7 @@
 <template>
   <div class="Home">
     <!-- 侧边栏 -->
-    <navMenu></navMenu>
+    <navMenu v-if="isShowNavMenu"></navMenu>
     <!-- 顶部信息 -->
     <div class="header">
       <div class="header-left">
@@ -99,6 +99,7 @@
     },
     data() {
       return {
+        isShowNavMenu: true,
         isWarnBox: false,
         form:{
           oldPasswd: '',
@@ -133,13 +134,20 @@
       };
     },
     watch:{
-      'current': function(){
-        console.log(Number(this.current[0]));
-        this.$router.push({
-          path: this.pages[Number(this.current[0])].name
-        })        
+      'current':{
+        handler:function(){
+          this.$router.push({
+            path: this.pages[Number(this.current[0])].name
+          })
+          
+          if(Number(this.current[0]) > 1){
+            this.isShowNavMenu = false
+          }else{
+            this.isShowNavMenu = true
+          }
+        }
       },
-      partitionId: function(n) {
+      'partitionId': function(n) {
         if (n != "") {
           this.alarmList = [];
           this.setAlarmList();
@@ -155,9 +163,7 @@
     created() {
       this.routeData = this.$router.options.routes.filter(_ => _.meta);
       this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
-
       // 设置监听
-
     },
     methods: {
       handleEdit(){

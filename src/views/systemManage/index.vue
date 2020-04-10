@@ -11,7 +11,7 @@
           </div>
           <el-button type="info" size="mini" @click="searchClicked">查询</el-button>
           <el-button type="info" size="mini" @click="clearSearch">重置</el-button>
-          <el-button type="primary" size="mini" @click="addClicked()">新增</el-button>
+          <el-button type="primary" size="mini" @click="addClicked()" v-if="userInfo.roleId == 0">新增</el-button>
         </div>
         <div class="dataGrid" id="historyDataHeight">
           <el-table :height="historyTableHeight" :data="historyAlarmList" style="width: 100%">
@@ -32,9 +32,9 @@
                   @click="handleEdit(scope.$index, scope.row)"
                   style="color: #009dd5"
                 >修改</span>
-                <span class="bar">|</span>
+                <span class="bar" v-if="userInfo.roleId == 0">|</span>
                 <el-popconfirm title="您确定删除此记录吗？" @onConfirm="delRights(scope.$index,scope.row)">
-                  <span slot="reference" class="clickBtn" style="color: #009dd5">删除</span>
+                  <span slot="reference" class="clickBtn" style="color: #009dd5" v-if="userInfo.roleId == 0">删除</span>
                 </el-popconfirm>                
               </template>
             </el-table-column>
@@ -172,7 +172,7 @@ export default {
         userId: row.id
       }).then(() => {
         this.$message({
-          type: "info",
+          type: "success",
           message: "重置成功"
         });
       });
@@ -217,6 +217,7 @@ export default {
             type: "info",
             message: "修改成功"
           });
+          this.getHistoryList()
           this.dialogTableVisible = false;
           for (const key in this.form) {
             this.form[key] = "";
@@ -230,6 +231,7 @@ export default {
             type: "info",
             message: "新增成功"
           });
+          this.getHistoryList()
           this.dialogTableVisible = false;
           for (const key in this.form) {
             this.form[key] = "";
