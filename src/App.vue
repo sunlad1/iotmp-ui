@@ -41,9 +41,9 @@
     height: 100%;
   }
 
-  .el-message--info{
+  .el-message--info,.el-message--error,.el-message--success{
     z-index: 100001 !important;
-    background: #000 !important;
+    background: rgba(0,0,0,.5) !important;
     border: 1px solid #00C3FF !important;
     p{
       color: #00C3FF !important;

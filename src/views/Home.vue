@@ -21,7 +21,7 @@
         <span>操作账号:</span>
         <span>{{ userInfo.realName }}</span>
         <span>|</span>
-        <span class="active cursor">修改密码</span>
+        <span class="active cursor" @click="editPassword">修改密码</span>
         <i @click="logOut" class="cursor el-icon-switch-button" color="#035CFF"></i>
       </div>
     </div>
@@ -29,21 +29,58 @@
     <div class="insideWarper">
       <router-view></router-view>
     </div>
+
+    <dialogBox :dialogTableVisible="dialogTableVisible" @closeDialog="closeDialog" @clearDialogSubmit="clearDialogSubmit" @onSubmit="onSubmit">
+      <template v-slot:header>
+        <img src="/static/imgs/operationManage/operationIcon.png" alt />
+        <p style="margin-right:auto">修改密码</p>
+      </template>
+      <template v-slot:middle>
+        <el-form ref="form" :model="form" label-width="100px">
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="旧密码">
+                <el-input placeholder="请输入" v-model="form.oldPasswd"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="新密码">
+                <el-input placeholder="请输入" v-model="form.newPasswd"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="确认密码">
+                <el-input placeholder="请输入" v-model="form.confirmPasswd"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </template>
+    </dialogBox>
+
   </div>
 </template>
 
 <script>
   import navMenu from './homeComponents/navMenu';
   import { mapGetters } from 'vuex';
-  import { logout } from '@/api/user';
+  import { logout, changePasswd } from '@/api/user';
+  import dialogBox from '@/components/dialogBox'
 
   export default {
     name: 'Home',
     components: {
-      navMenu
+      navMenu,
+      dialogBox
     },
     data() {
       return {
+        form:{
+          oldPasswd: '',
+          newPasswd: '',
+          confirmPasswd: ''
+        },
+        dialogTableVisible: false,
         routeData: [],
         current: ['0'],
         levelArr: [],
@@ -88,6 +125,45 @@
       this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
     },
     methods: {
+      closeDialog(){
+        this.clearDialogSubmit()
+      },
+      onSubmit(){
+        if(this.form.oldPasswd.trim() == '' || this.form.newPasswd.trim() == '' || this.form.confirmPasswd.trim() == ''){
+          this.$message({
+            type: "info",
+            message: "请完善信息后提交"
+          });
+          return
+        }
+        if(this.form.newPasswd != this.form.confirmPasswd){
+          this.$message({
+            type: "info",
+            message: "新密码和确认密码不一致"
+          });
+          return
+        }
+
+        let obj = JSON.parse(JSON.stringify(this.form))
+        delete obj.confirmPasswd
+
+        changePasswd(obj).then(() => {
+          this.clearDialogSubmit()
+          this.$message({
+            type: "success",
+            message: "修改成功"
+          });
+        })
+      },
+      clearDialogSubmit(){
+        this.dialogTableVisible = false
+        for (const key in this.form) {
+          this.form[key] = ''
+        }
+      },
+      editPassword(){
+        this.dialogTableVisible = true
+      },
       logOut(){
         logout().then(() => {
           this.$router.push({

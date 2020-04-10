@@ -17,3 +17,12 @@ export const logout = (obj) => {
     params: obj
   })
 }
+
+//  修改密码
+export const changePasswd = (obj) => {
+  return request({
+    url: '/system/changePasswd',
+    method: 'get',
+    params: obj
+  })
+}

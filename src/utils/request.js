@@ -20,7 +20,7 @@ axios.interceptors.request.use(config => {
 //HTTPresponse拦截
 axios.interceptors.response.use(res => {
   const status = res.status || 200
-  const message = res.statusText || '未知错误';
+  const message = res.data || '未知错误';
   // 如果请求为非200否者默认统一处理
   console.log('status');
   console.log(status);
@@ -29,6 +29,9 @@ axios.interceptors.response.use(res => {
     return Promise.reject('302')
   }
   if (status !== 200) {
+    console.log('res');
+    console.log(res);
+    
     Message({
       message: message,
       type: 'error'
