@@ -55,17 +55,7 @@
           </div>
           <div class="dataGrid" id="dataHeight">
             <el-table :height="tableHeight" :data="historyList" style="width: 100%">
-              <el-table-column v-for="(item,index) in tableList" :key="index" :prop="String(index)" :label="item"></el-table-column>
-              <!-- <el-table-column prop="0" label="序号"></el-table-column>
-              <el-table-column prop="1" label="设备地址" width="150px"></el-table-column>
-              <el-table-column prop="2" label="温度"></el-table-column>
-              <el-table-column prop="2" label="湿度"></el-table-column>
-              <el-table-column prop="3" label="甲烷"></el-table-column>
-              <el-table-column prop="4" label="一氧化碳"></el-table-column>
-              <el-table-column prop="5" label="硫化氢"></el-table-column>
-              <el-table-column prop="6" label="氧气"></el-table-column>
-              <el-table-column prop="7" label="集水坑液位高度"></el-table-column>
-              <el-table-column prop="8" label="数据采集时间"></el-table-column> -->
+              <el-table-column v-for="(item,index) in tableList" :key="index" :prop="String(index)" :width="item == '设备地址' ? '200px' : 'auto' " :label="item"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -87,9 +77,10 @@
             style="margin-right:auto;"
           >{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
           <div>
+            <!-- :label="item.subscribeId" -->
             <el-radio-group v-model="radio">
               <el-radio
-                :label="item.subscribeId"
+                :label="index"
                 v-for="(item,index) in radioArr"
                 :key="index"
               >{{ item.subscribeTitle }}</el-radio>
@@ -170,11 +161,15 @@ export default {
       if (!n) return;
       this.filterArr2 = this.filterArr1[Number(n)].deviceList;
       this.activeIndex2 = "0";
+      this.getGroupData();
+      this.pageNumber = 1
       this.getHistoryList();
     },
     activeIndex2: function(n) {
       if (!n) return;
       this.getGroupData();
+      this.pageNumber = 1
+      this.getHistoryList()
     },
     partitionId: {
       handler: function() {
@@ -183,7 +178,7 @@ export default {
       immediate: true
     },
     radio: function(n) {
-      if (!n) return;
+      if (!n && n != 0) return;
       // 类型改变重新渲染 echarts
       this.setEchartsData();
     }
@@ -209,7 +204,9 @@ export default {
       if (this.wsObj) {
         this.wsObj.onclose(true);
       }
-
+      console.log(this.radioArr);
+      console.log(this.radio);
+      
       this.wsObj = new WebSocket(
         `ws://${websoketURL}/ws/getMeterHistoryRecord?subscribeId=${
           this.radioArr[this.radio].subscribeId
@@ -249,7 +246,10 @@ export default {
           deviceId: this.filterArr2[Number(this.activeIndex2)].id
         });
         this.radioArr = res.data || [];
-        this.radio = this.radioArr.length > 0 && this.radioArr[0].subscribeId;
+        this.radio = 0
+        this.setEchartsData()
+        // this.radio = this.radioArr.length > 0 && this.radioArr[0].subscribeId;
+        // this.historyList = res.data
       } catch (error) {
         console.log(error);
       }
@@ -449,7 +449,7 @@ export default {
 
   .el-table .cell {
     white-space: nowrap;
-    max-width: 100px;
+    // max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

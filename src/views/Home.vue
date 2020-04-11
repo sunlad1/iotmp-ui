@@ -134,6 +134,9 @@
       };
     },
     watch:{
+      '$route': function(){
+        this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
+      },
       'current':{
         handler:function(){
           this.$router.push({

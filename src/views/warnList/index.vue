@@ -59,12 +59,12 @@
                   <li v-for="(item,index) in alarmConfig.configList" :key="index">
                     <span class="activeColor">{{ item.subscribeTitle }}:</span>
                     <span>上限</span>
-                    <input type="text" :value="item.maxValue" @input="changeInput($event,index)">
+                    <input type="number" :value="item.maxValue" @input="changeInput($event,index)">
                     <!-- <span class="activeColor">{{ item.maxValue }}</span> -->
                     <span>{{ item.unitName }}</span>
                     <span class="bar"></span>
                     <span>下限</span>
-                    <input type="text" :value="item.minValue">
+                    <input type="number" :value="item.minValue">
                     <!-- <span class="activeColor">{{ item.minValue }}</span> -->
                     <span>{{ item.unitName }}</span>
                   </li>
@@ -343,6 +343,7 @@ export default {
     logHandleEdit(index,row){
       this.dialogVisible = true
       this.currentId = row.id
+      this.textarea = row.handleLog
       // let that = this
       // this.$prompt('请输入记录内容', '提示', {
       //   confirmButtonText: '确定',
