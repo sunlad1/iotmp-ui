@@ -22,16 +22,10 @@ axios.interceptors.response.use(res => {
   const status = res.status || 200
   const message = res.data || '未知错误';
   // 如果请求为非200否者默认统一处理
-  console.log('status');
-  console.log(status);
-  
   if(status == 302){
     return Promise.reject('302')
   }
   if (status !== 200) {
-    console.log('res');
-    console.log(res);
-    
     Message({
       message: message,
       type: 'error'

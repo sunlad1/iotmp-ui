@@ -142,28 +142,28 @@ export default {
         this.totalList.forEach((v, i) => {
           v.forEach((el, index) => {
             this.wsLeftArr[i][index].meterList &&
-              this.wsLeftArr[i][index].meterList.close(true);
+              this.wsLeftArr[i][index].meterList.close(1000);
             this.wsLeftArr[i][index].meterLevelObj &&
-              this.wsLeftArr[i][index].meterLevelObj.close(true);
+              this.wsLeftArr[i][index].meterLevelObj.close(1000);
           });
         });
       }
     }
   },
-  beforeDestroy(){
+  beforeDestroy() {
     this.totalList.forEach((v, i) => {
       v.forEach((el, index) => {
         this.wsLeftArr[i][index].meterList &&
-          this.wsLeftArr[i][index].meterList.close(true);
+          this.wsLeftArr[i][index].meterList.close(1000);
         this.wsLeftArr[i][index].meterLevelObj &&
-          this.wsLeftArr[i][index].meterLevelObj.close(true);
+          this.wsLeftArr[i][index].meterLevelObj.close(1000);
       });
     });
   },
   methods: {
     setMeterData(deviceId, index, secondIndex) {
       if (this.wsLeftArr[index][secondIndex].meterList) {
-        this.wsLeftArr[index][secondIndex].meterList.close(true);
+        this.wsLeftArr[index][secondIndex].meterList.close(1000);
       }
       this.wsLeftArr[index][secondIndex].meterList = new WebSocket(
         `ws://${websoketURL}/ws/getMeterData?deviceId=${deviceId}`
@@ -178,10 +178,10 @@ export default {
         this.totalList[index][secondIndex].meterList.push([]);
       };
 
-      this.wsLeftArr[index][secondIndex].meterList.onclose = function(flag) {
+      this.wsLeftArr[index][secondIndex].meterList.onclose = (val)=> {
         // 关闭 websocket
         this.totalList[index][secondIndex].meterList = [];
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
       };
@@ -195,7 +195,7 @@ export default {
     },
     setMeterLevelObj(deviceId, index, secondIndex) {
       if (this.wsLeftArr[index][secondIndex].meterLevelObj) {
-        this.wsLeftArr[index][secondIndex].meterLevelObj.close(true);
+        this.wsLeftArr[index][secondIndex].meterLevelObj.close(1000);
       }
       this.wsLeftArr[index][secondIndex].meterLevelObj = new WebSocket(
         `ws://${websoketURL}/ws/getMeterLevel?deviceId=${deviceId}`
@@ -209,12 +209,10 @@ export default {
         this.totalList[index][secondIndex].meterLevelObj = JSON.parse(res.data);
       };
 
-      this.wsLeftArr[index][secondIndex].meterLevelObj.onclose = function(
-        flag
-      ) {
+      this.wsLeftArr[index][secondIndex].meterLevelObj.onclose = (val) => {
         // 关闭 websocket
         this.totalList[index][secondIndex].meterLevelObj = {};
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
         console.log("关闭ws-setMeterLevelObj");

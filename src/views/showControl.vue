@@ -4,16 +4,16 @@
   <div class="guideGrid">
     <span>当前位置：</span>
     <p v-if="levelArr.length == 1">
-      <span class="hignLightWord">{{ partitionedList[levelArr[0]].partitionName }}</span>
+      <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }}</span>
     </p>
     <p v-if="levelArr.length == 2">
-      <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
-      <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }}</span>
+      <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }} > </span>
+      <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }}</span>
     </p>
     <p v-if="levelArr.length == 3">
-      <span class="normalWord">{{ partitionedList[levelArr[0]].partitionName }} > </span>
-      <span class="normalWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }} > </span>
-      <span class="hignLightWord">{{ partitionedList[levelArr[0]].childPartition[levelArr[1]].childPartition[levelArr[2]].partitionName }}</span>
+      <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }} > </span>
+      <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }} > </span>
+      <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].childPartition[levelArr[2]].partitionName }}</span>
     </p>
   </div>
   <div class="flexBottom">

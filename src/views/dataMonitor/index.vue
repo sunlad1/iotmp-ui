@@ -200,14 +200,14 @@ export default {
   },
   beforeDestroy(){
     if (this.wsObj) {
-      this.wsObj.close(true);
+      this.wsObj.close(1000);
     }
   },
   methods: {
     // 获取走势图数据
     setEchartsData() {
       if (this.wsObj) {
-        this.wsObj.close(true);
+        this.wsObj.close(1000);
       }
       console.log(this.radioArr);
       console.log(this.radio);
@@ -228,10 +228,10 @@ export default {
         console.log("this.echartsData");
       };
 
-      this.wsObj.onclose = function(flag) {
+      this.wsObj.onclose = function(val) {
         // 关闭 websocket
         this.echartsData = [];
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
         console.log("关闭ws-setEchartsData");

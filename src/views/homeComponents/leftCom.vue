@@ -20,7 +20,7 @@
           <div class="circle">
             <span class="level" v-if="meterLevelObj.level == '优'">{{ meterLevelObj.level }}</span>
             <span class="level" style="color:red" v-else>{{ meterLevelObj.level }}</span>
-            <span>{{ meterLevelObj.partitionName }}</span>
+            <span>{{ meterLevelObj && meterLevelObj.partitionName }}</span>
             <span>当前状态</span>
           </div>
           <div class="manyData">
@@ -141,9 +141,9 @@ export default {
         } else {
           // 清空数据的同时 还要关闭ws
           [1, 2].forEach(v => {
-            this.wsLeftArr[v] && this.wsLeftArr[v].close(true);
+            this.wsLeftArr[v] && this.wsLeftArr[v].close(1000);
           });
-          this.wsLeftArr[0] && this.wsLeftArr[0].close(true);
+          this.wsLeftArr[0] && this.wsLeftArr[0].close(1000);
           this.options = [];
           this.groupVal = "";
         }
@@ -153,7 +153,7 @@ export default {
     },
     setAlarmList() {
       if (this.wsLeftArr[0]) {
-        this.wsLeftArr[0].close(true);
+        this.wsLeftArr[0].close(1000);
       }
 
       this.wsLeftArr[0] = new WebSocket(
@@ -167,10 +167,10 @@ export default {
         this.alarmList = JSON.parse(res.data);
       };
 
-      this.wsLeftArr[0].onclose = function(flag) {
+      this.wsLeftArr[0].onclose = (val)=> {
         // 关闭 websocket
         this.alarmList = [];
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
         console.log("关闭ws-setAlarmList");
@@ -178,13 +178,13 @@ export default {
     },
     beforeDestroy(){
       if (this.wsLeftArr[0]) {
-        this.wsLeftArr[0].close(true);
+        this.wsLeftArr[0].close(1000);
       }
       if (this.wsLeftArr[1]) {
-        this.wsLeftArr[1].close(true);
+        this.wsLeftArr[1].close(1000);
       }
       if (this.wsLeftArr[2]) {
-        this.wsLeftArr[2].close(true);
+        this.wsLeftArr[2].close(1000);
       }
     },
     errorBox() {
@@ -196,7 +196,7 @@ export default {
     },
     setMeterData(deviceId) {
       if (this.wsLeftArr[1]) {
-        this.wsLeftArr[1].close(true);
+        this.wsLeftArr[1].close(1000);
       }
 
       // this.wsLeftArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}&groupId=${groupId}`)
@@ -213,17 +213,20 @@ export default {
         this.meterList.push([]);
       };
 
-      this.wsLeftArr[1].onclose = function(flag) {
+      this.wsLeftArr[1].onclose = (val)=> {
         // 关闭 websocket
+        console.log('val');
+        console.log(val);
+        
         this.meterList = [];
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
       };
     },
     setMeterLevelObj(deviceId) {
       if (this.wsLeftArr[2]) {
-        this.wsLeftArr[2].close(true);
+        this.wsLeftArr[2].close(1000);
       }
 
       // this.wsLeftArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}&groupId=${groupId}`)
@@ -239,10 +242,10 @@ export default {
         this.meterLevelObj = JSON.parse(res.data);
       };
 
-      this.wsLeftArr[2].onclose = function(flag) {
+      this.wsLeftArr[2].onclose = (val)=> {
         // 关闭 websocket
         this.meterLevelObj = {};
-        if (!flag) {
+        if (val.code != 1000) {
           this.errorBox();
         }
         console.log("关闭ws-setMeterLevelObj");

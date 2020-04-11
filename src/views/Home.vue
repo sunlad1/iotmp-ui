@@ -170,7 +170,7 @@
     },
     beforeDestroy(){
       if (this.wsLeftArr[0]) {
-        this.wsLeftArr[0].close(true);
+        this.wsLeftArr[0].close(1000);
       }
     },
     methods: {
@@ -181,7 +181,7 @@
       },
       setAlarmList() {
         if (this.wsLeftArr[0]) {
-          this.wsLeftArr[0].close(true);
+          this.wsLeftArr[0].close(1000);
         }
 
         this.wsLeftArr[0] = new WebSocket(
@@ -198,10 +198,10 @@
           }
         };
 
-        this.wsLeftArr[0].onclose = function(flag) {
+        this.wsLeftArr[0].onclose = function(val) {
           // 关闭 websocket
           this.alarmList = [];
-          if (!flag) {
+          if (val.code != 1000) {
             this.errorBox();
           }
           console.log("关闭ws-setAlarmList");

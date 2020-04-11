@@ -58,6 +58,7 @@ import { mapGetters } from 'vuex'
 export default {
   data(){
     return {
+      clearIndex: 0,
       totalData: [],
       tableData: [],
       checkList:[],
@@ -131,14 +132,16 @@ export default {
     },
     closeAllWs(){
       (this.wsArr || []).forEach( (v,index) => {
-        this.wsArr && this.wsArr[index].close(index,true)
+        this.wsArr && this.wsArr[index].close(1000)
+        this.clearIndex = index
       })
     },
     WebSocketFun(obj,index){
       let groupId = obj.groupId
       // 每次监控钱需要先关闭旧的监控
       if(this.wsArr[index]){
-        this.wsArr[index].close(index,true)
+        this.wsArr[index].close(1000)
+        this.clearIndex = index
       }
 
       // new ws对象，进行监控 
@@ -156,10 +159,10 @@ export default {
         this.$set(this.totalData, index, JSON.parse(res.data))
       }
 
-      this.wsArr[index].onclose = (i,flag) =>
+      this.wsArr[index].onclose = (val) =>
       {
-        if(this.totalData && this.totalData[i]) this.totalData[i] = []
-        if(!flag){
+        if(this.totalData && this.totalData[this.clearIndex]) this.totalData[this.clearIndex] = []
+        if (val.code != 1000) {
           this.$notify({
             title: '提示',
             message: '数据监控出现异常，请刷新网页',
