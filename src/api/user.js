@@ -26,3 +26,12 @@ export const changePasswd = (obj) => {
     params: obj
   })
 }
+
+//  修改密码
+export const getVideoMonitorInfo = (obj) => {
+  return request({
+    url: '/videoMonitor/getVideoMonitorInfo',
+    method: 'get',
+    params: obj
+  })
+}

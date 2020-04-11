@@ -121,6 +121,13 @@ Date.prototype.format = function(fmt){
   return fmt;
 }
 
+
+if(process.env.NODE_ENV === 'production'){
+  console.log = () => {}
+  console.error = () => {}
+  console.warn = () => {}
+}
+
 new Vue({
   router,
   store,

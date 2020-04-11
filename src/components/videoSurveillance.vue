@@ -34,6 +34,7 @@
 <script src="jsencrypt.min.js"></script>  
 <script>
 import { websoketURL } from "@/config/env";
+import { getVideoMonitorInfo } from '@/api/user'
 var oWebControl = null; // 插件对象
 var initCount = 0;
 var pubKey = "";
@@ -94,12 +95,10 @@ function initPlugin() {
 //初始化
 function init() {
   getPubKey(function() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", `http://${websoketURL}/videoMonitor/getVideoMonitorInfo`);
-    xhr.send(null);
-    xhr.onreadystatechange = function() {
-      if (xhr.status == 200 && xhr.readyState == 4) {
-        var data = JSON.parse(xhr.responseText);
+    getVideoMonitorInfo().then(res => {
+      // if (res.status == 200 && res.readyState == 4) {
+        // var data = JSON.parse(xhr.responseText);
+        var data = res.data;
         ////////////////////////////////// 请自行修改以下变量值	////////////////////////////////////
         var appkey = data.appKey; //综合安防管理平台提供的appkey，必填
         var secret = setEncrypt(data.appSecret); //综合安防管理平台提供的secret，必填
@@ -137,8 +136,53 @@ function init() {
       .then(function() {
         // oWebControl.JS_Resize(1108, 600);  // 初始化后resize一次，规避firefox下首次显示窗口后插件窗口未与DIV窗口重合问题
       });
-      }
-    };
+      // }
+    })
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("get", `http://${websoketURL}/videoMonitor/getVideoMonitorInfo`);
+    // xhr.send(null);
+    // xhr.onreadystatechange = function() {
+    //   if (xhr.status == 200 && xhr.readyState == 4) {
+    //     var data = JSON.parse(xhr.responseText);
+    //     ////////////////////////////////// 请自行修改以下变量值	////////////////////////////////////
+    //     var appkey = data.appKey; //综合安防管理平台提供的appkey，必填
+    //     var secret = setEncrypt(data.appSecret); //综合安防管理平台提供的secret，必填
+    //     var ip = data.ip; //综合安防管理平台IP地址，必填
+    //     var playMode = Number(playModeValue); //初始播放模式：0-预览，1-回放
+    //     var port = 443; //综合安防管理平台端口，若启用HTTPS协议，默认443
+    //     var snapDir = "D:\\SnapDir"; //抓图存储路径
+    //     var videoDir = "D:\\VideoDir"; //紧急录像或录像剪辑存储路径
+    //     var layout = "1x1"; //playMode指定模式的布局
+    //     var enableHTTPS = 1; //是否启用HTTPS协议与综合安防管理平台交互，是为1，否为0
+    //     var encryptedFields = "secret"; //加密字段，默认加密领域为secret
+    //     var showToolbar = 1; //是否显示工具栏，0-不显示，非0-显示
+    //     var showSmart = 1; //是否显示智能信息（如配置移动侦测后画面上的线框），0-不显示，非0-显示
+    //     var buttonIDs = "0,16,256,257,258,259,260,512,513,514,515,516,517,768,769"; //自定义工具条按钮
+    //     ////////////////////////////////// 请自行修改以上变量值	////////////////////////////////////
+    //     oWebControl
+    //   .JS_RequestInterface({
+    //     funcName: "init",
+    //     argument: JSON.stringify({
+    //       appkey: appkey, //API网关提供的appkey
+    //       secret: secret, //API网关提供的secret
+    //       ip: ip, //API网关IP地址
+    //       playMode: playMode, //播放模式（决定显示预览还是回放界面）
+    //       port: port, //端口
+    //       snapDir: snapDir, //抓图存储路径
+    //       videoDir: videoDir, //紧急录像或录像剪辑存储路径
+    //       layout: layout, //布局
+    //       enableHTTPS: enableHTTPS, //是否启用HTTPS协议
+    //       encryptedFields: encryptedFields, //加密字段
+    //       showToolbar: showToolbar, //是否显示工具栏
+    //       showSmart: showSmart, //是否显示智能信息
+    //       buttonIDs: buttonIDs //自定义工具条按钮
+    //     })
+    //   })
+    //   .then(function() {
+    //     // oWebControl.JS_Resize(1108, 600);  // 初始化后resize一次，规避firefox下首次显示窗口后插件窗口未与DIV窗口重合问题
+    //   });
+    //   }
+    // };
   });
 }
 //获取公钥

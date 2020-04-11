@@ -70,7 +70,7 @@
           </div>
         </div>
       </div>
-      <div class="chartsGrid" id="echartsGridParent">
+      <div class="chartsGrid" id="echartsGridParent" v-show="radioArr.length > 0">
         <div class="titleGrid">
           <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
           <p
