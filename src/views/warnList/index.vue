@@ -59,12 +59,12 @@
                   <li v-for="(item,index) in alarmConfig.configList" :key="index">
                     <span class="activeColor">{{ item.subscribeTitle }}:</span>
                     <span>上限</span>
-                    <input type="number" :value="item.maxValue" @input="changeInput($event,index)">
+                    <input type="number" :value="item.maxValue" @input="changeInput($event,index, 'maxValue')">
                     <!-- <span class="activeColor">{{ item.maxValue }}</span> -->
                     <span>{{ item.unitName }}</span>
                     <span class="bar"></span>
                     <span>下限</span>
-                    <input type="number" :value="item.minValue">
+                    <input type="number" :value="item.minValue" @input="changeInput($event,index, 'minValue')">
                     <!-- <span class="activeColor">{{ item.minValue }}</span> -->
                     <span>{{ item.unitName }}</span>
                   </li>
@@ -303,8 +303,8 @@ export default {
         });
       })
     },
-    changeInput(e,index){
-      this.alarmConfig.configList[index] = e.srcElement.value
+    changeInput(e,index,word){
+      this.alarmConfig.configList[index][word] = e.srcElement.value
     },
     getGetAlarmConfig(){
       getAlarmConfig().then(res => {

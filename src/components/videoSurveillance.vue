@@ -29,6 +29,7 @@
 <script src="jsWebControl-1.0.0.min.js"></script>
 <script src="jsencrypt.min.js"></script>  
 <script>
+import { websoketURL } from "@/config/env";
 var oWebControl = null; // 插件对象
 var initCount = 0;
 var pubKey = "";
@@ -89,7 +90,7 @@ function initPlugin() {
 function init() {
   getPubKey(function() {
     var xhr = new XMLHttpRequest();
-    xhr.open("get", "http://39.99.132.48:10098/videoMonitor/getVideoMonitorInfo");
+    xhr.open("get", `http://${websoketURL}/videoMonitor/getVideoMonitorInfo`);
     xhr.send(null);
     xhr.onreadystatechange = function() {
       if (xhr.status == 200 && xhr.readyState == 4) {
@@ -145,7 +146,6 @@ function getPubKey(callback) {
       })
     })
     .then(function(oData) {
-      console.log(oData);
       if (oData.responseMsg.data) {
         pubKey = oData.responseMsg.data;
         callback();
@@ -197,12 +197,7 @@ export default {
         widthGrid = con.offsetWidth
         heightGrid = con.offsetHeight
         con.setAttribute('id','playWnd');
-        console.log('widthGrid');
-        console.log(widthGrid);
-        console.log(heightGrid);
-        
         initPlugin()
-
       },1000)
     })
   },
