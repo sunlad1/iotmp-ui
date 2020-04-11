@@ -27,6 +27,7 @@
                 <el-table-column
                   prop="deviceValue"
                   label="状态"
+                  width="70px"
                 >
                 </el-table-column>
                 <el-table-column label="操作">
@@ -34,7 +35,7 @@
                     <div class="operrateGrid">
                       <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
                         <span @click="handleEdit(el.id)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
-                        <span style="color: #009dd5" class="bar">|</span>
+                        <span style="color: #009dd5;padding:0 2px" class="bar">|</span>
                       </div>
                     </div>
                     <!-- <span @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">自动</span> -->
@@ -83,6 +84,9 @@ export default {
       })
     }
   },
+  beforeDestroy(){
+    this.closeAllWs()
+  },
   methods:{
     handleEdit(id){
       setOperate({
@@ -127,14 +131,14 @@ export default {
     },
     closeAllWs(){
       (this.wsArr || []).forEach( (v,index) => {
-        this.wsArr && this.wsArr[index].onclose(index,true)
+        this.wsArr && this.wsArr[index].close(index,true)
       })
     },
     WebSocketFun(obj,index){
       let groupId = obj.groupId
       // 每次监控钱需要先关闭旧的监控
       if(this.wsArr[index]){
-        this.wsArr[index].onclose(index,true)
+        this.wsArr[index].close(index,true)
       }
 
       // new ws对象，进行监控 

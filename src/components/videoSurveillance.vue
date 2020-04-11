@@ -87,7 +87,7 @@ function initPlugin() {
       // 异常断开：bNormalClose = false
       // JS_Disconnect正常断开：bNormalClose = true
       console.log("cbConnectClose");
-      oWebControl = null;
+      // oWebControl = null;
     }
   });
 }
@@ -205,10 +205,14 @@ export default {
     'monitorType': function(n){
       if(n == 0){
         playModeValue = 0
-        initPlugin()
+        this.closeWindow(() => {
+            initPlugin()
+        })
       }else{
         playModeValue = 1
-        initPlugin()
+        this.closeWindow(() => {
+            initPlugin()
+        })
       }
     }
   },
@@ -234,14 +238,20 @@ export default {
     })
   },
   methods: {
-    closeWindow() {
+    closeWindow(callback) {
       if (oWebControl != null) {
         oWebControl.JS_HideWnd(); // 先让窗口隐藏，规避可能的插件窗口滞后于浏览器消失问题
         oWebControl.JS_Disconnect().then(
           () => {
             // 断开与插件服务连接成功
+            oWebControl = null;
+            console.log('断开与插件服务连接成功');
+            if(callback){
+              callback()
+            }
           },
           () => {
+            console.log('断开与插件服务连接失败');
             // 断开与插件服务连接失败
           }
         );

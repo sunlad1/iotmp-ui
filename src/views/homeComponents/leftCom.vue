@@ -141,9 +141,9 @@ export default {
         } else {
           // 清空数据的同时 还要关闭ws
           [1, 2].forEach(v => {
-            this.wsLeftArr[v] && this.wsLeftArr[v].onclose(true);
+            this.wsLeftArr[v] && this.wsLeftArr[v].close(true);
           });
-          this.wsLeftArr[0] && this.wsLeftArr[0].onclose(true);
+          this.wsLeftArr[0] && this.wsLeftArr[0].close(true);
           this.options = [];
           this.groupVal = "";
         }
@@ -153,7 +153,7 @@ export default {
     },
     setAlarmList() {
       if (this.wsLeftArr[0]) {
-        this.wsLeftArr[0].onclose(true);
+        this.wsLeftArr[0].close(true);
       }
 
       this.wsLeftArr[0] = new WebSocket(
@@ -176,6 +176,17 @@ export default {
         console.log("关闭ws-setAlarmList");
       };
     },
+    beforeDestroy(){
+      if (this.wsLeftArr[0]) {
+        this.wsLeftArr[0].close(true);
+      }
+      if (this.wsLeftArr[1]) {
+        this.wsLeftArr[1].close(true);
+      }
+      if (this.wsLeftArr[2]) {
+        this.wsLeftArr[2].close(true);
+      }
+    },
     errorBox() {
       this.$notify({
         title: "提示",
@@ -185,7 +196,7 @@ export default {
     },
     setMeterData(deviceId) {
       if (this.wsLeftArr[1]) {
-        this.wsLeftArr[1].onclose(true);
+        this.wsLeftArr[1].close(true);
       }
 
       // this.wsLeftArr[1] = new WebSocket(`ws://${websoketURL}/ws/getMeterData?partitionId=${this.partitionId}&groupId=${groupId}`)
@@ -212,7 +223,7 @@ export default {
     },
     setMeterLevelObj(deviceId) {
       if (this.wsLeftArr[2]) {
-        this.wsLeftArr[2].onclose(true);
+        this.wsLeftArr[2].close(true);
       }
 
       // this.wsLeftArr[2] = new WebSocket(`ws://${websoketURL}/ws/getMeterLevel?partitionId=${this.partitionId}&groupId=${groupId}`)

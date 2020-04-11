@@ -238,6 +238,11 @@ export default {
       }
     }
   },
+  beforeDestroy(){
+    if (this.wsLeftArr[0]) {
+      this.wsLeftArr[0].close(true);
+    }
+  },
   methods: {
     handleCurrentChange(e) {
       // 分页数据改变
@@ -370,7 +375,7 @@ export default {
     },
     setAlarmList() {
       if (this.wsLeftArr[0]) {
-        this.wsLeftArr[0].onclose(true);
+        this.wsLeftArr[0].close(true);
       }
 
       this.wsLeftArr[0] = new WebSocket(

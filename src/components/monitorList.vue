@@ -142,18 +142,28 @@ export default {
         this.totalList.forEach((v, i) => {
           v.forEach((el, index) => {
             this.wsLeftArr[i][index].meterList &&
-              this.wsLeftArr[i][index].meterList.onclose(true);
+              this.wsLeftArr[i][index].meterList.close(true);
             this.wsLeftArr[i][index].meterLevelObj &&
-              this.wsLeftArr[i][index].meterLevelObj.onclose(true);
+              this.wsLeftArr[i][index].meterLevelObj.close(true);
           });
         });
       }
     }
   },
+  beforeDestroy(){
+    this.totalList.forEach((v, i) => {
+      v.forEach((el, index) => {
+        this.wsLeftArr[i][index].meterList &&
+          this.wsLeftArr[i][index].meterList.close(true);
+        this.wsLeftArr[i][index].meterLevelObj &&
+          this.wsLeftArr[i][index].meterLevelObj.close(true);
+      });
+    });
+  },
   methods: {
     setMeterData(deviceId, index, secondIndex) {
       if (this.wsLeftArr[index][secondIndex].meterList) {
-        this.wsLeftArr[index][secondIndex].meterList.onclose(true);
+        this.wsLeftArr[index][secondIndex].meterList.close(true);
       }
       this.wsLeftArr[index][secondIndex].meterList = new WebSocket(
         `ws://${websoketURL}/ws/getMeterData?deviceId=${deviceId}`
@@ -185,7 +195,7 @@ export default {
     },
     setMeterLevelObj(deviceId, index, secondIndex) {
       if (this.wsLeftArr[index][secondIndex].meterLevelObj) {
-        this.wsLeftArr[index][secondIndex].meterLevelObj.onclose(true);
+        this.wsLeftArr[index][secondIndex].meterLevelObj.close(true);
       }
       this.wsLeftArr[index][secondIndex].meterLevelObj = new WebSocket(
         `ws://${websoketURL}/ws/getMeterLevel?deviceId=${deviceId}`

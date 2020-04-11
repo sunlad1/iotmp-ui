@@ -198,11 +198,16 @@ export default {
       }, 500);
     });
   },
+  beforeDestroy(){
+    if (this.wsObj) {
+      this.wsObj.close(true);
+    }
+  },
   methods: {
     // 获取走势图数据
     setEchartsData() {
       if (this.wsObj) {
-        this.wsObj.onclose(true);
+        this.wsObj.close(true);
       }
       console.log(this.radioArr);
       console.log(this.radio);

@@ -168,6 +168,11 @@
       this.current[0] = String(this.pages.findIndex(v => v.name === this.$route.path))
       // 设置监听
     },
+    beforeDestroy(){
+      if (this.wsLeftArr[0]) {
+        this.wsLeftArr[0].close(true);
+      }
+    },
     methods: {
       handleEdit(){
         this.$router.push({
@@ -176,7 +181,7 @@
       },
       setAlarmList() {
         if (this.wsLeftArr[0]) {
-          this.wsLeftArr[0].onclose(true);
+          this.wsLeftArr[0].close(true);
         }
 
         this.wsLeftArr[0] = new WebSocket(
