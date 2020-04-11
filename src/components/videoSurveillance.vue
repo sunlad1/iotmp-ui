@@ -3,7 +3,11 @@
     <div class="header">
       <div class="title">
         <div class="ico"></div>
-        防火分区
+        <span style="display:inline-block;margin-right:auto">防火分区</span>
+        <el-radio-group v-model="monitorType">
+          <el-radio :label="0">预览</el-radio>
+          <el-radio :label="1">回放</el-radio>
+        </el-radio-group>
       </div>
       <!-- <div class="select">
         <a-select
@@ -35,6 +39,7 @@ var initCount = 0;
 var pubKey = "";
 var widthGrid = 0;
 var heightGrid = 0;
+var playModeValue = '0';
 function remToPx(rem) {
   if (!rem) {
     return 0;
@@ -99,7 +104,7 @@ function init() {
         var appkey = data.appKey; //综合安防管理平台提供的appkey，必填
         var secret = setEncrypt(data.appSecret); //综合安防管理平台提供的secret，必填
         var ip = data.ip; //综合安防管理平台IP地址，必填
-        var playMode = 0; //初始播放模式：0-预览，1-回放
+        var playMode = Number(playModeValue); //初始播放模式：0-预览，1-回放
         var port = 443; //综合安防管理平台端口，若启用HTTPS协议，默认443
         var snapDir = "D:\\SnapDir"; //抓图存储路径
         var videoDir = "D:\\VideoDir"; //紧急录像或录像剪辑存储路径
@@ -173,18 +178,45 @@ function cbIntegrationCallBack(oData) {
 }
 export default {
   name: "HelloWorld",
-  props: {},
+  props: {
+    isCloseMonitor:{
+      type: Boolean
+    }
+  },
   data() {
     return {
+      monitorType: 0,
       selectData: [{}],
       current: [0]
     };
   },
+  watch:{
+    'isCloseMonitor': function(n){
+      if(n){
+        // close
+        this.closeWindow()
+        // oWebControl.JS_RequestInterface({
+        //     funcName: "stopAllPreview"
+        // });
+      }else{
+        initPlugin()
+      }
+    },
+    'monitorType': function(n){
+      if(n == 0){
+        playModeValue = 0
+        initPlugin()
+      }else{
+        playModeValue = 1
+        initPlugin()
+      }
+    }
+  },
   beforeDestroy(){
     this.closeWindow()
-    oWebControl.JS_RequestInterface({
-        funcName: "stopAllPreview"
-    });
+    // oWebControl.JS_RequestInterface({
+    //     funcName: "stopAllPreview"
+    // });
   },
   mounted() {
     let timer = null   //video-surveillance
@@ -242,6 +274,7 @@ export default {
     width: 100%;
     align-items: center;
     .title {
+      width: 100%;
       position: relative;
       color: #0099cc;
       font-size: 0.18rem;
@@ -252,6 +285,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-right: .2rem;
       .ico {
         // position: absolute;
         // left: -30px;

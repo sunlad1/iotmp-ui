@@ -99,6 +99,9 @@ export default {
     ...mapGetters(["partitionId"])
   },
   watch: {
+    'dialogTableVisible': function(n){
+      this.$emit('changeIsCloseMonitor', n)
+    },
     partitionId: function(n) {
       if (n != "") {
         this.alarmList = [];

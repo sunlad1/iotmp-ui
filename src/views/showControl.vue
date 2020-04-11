@@ -20,10 +20,10 @@
     <div class="content">
       <div class="top">
         <div class="left">
-          <leftCom></leftCom>
+          <leftCom :isCloseMonitor="isCloseMonitor" @changeIsCloseMonitor="changeIsCloseMonitor"></leftCom>
         </div>
         <div class="right" id="right">
-          <VideoSurveillance/>
+          <VideoSurveillance :isCloseMonitor="isCloseMonitor"/>
         </div>
       </div>
     </div>
@@ -44,7 +44,8 @@
 export default {
   data(){
     return {
-      levelArr: []
+      levelArr: [],
+      isCloseMonitor: false
     }
   },
   computed: {
@@ -56,14 +57,19 @@ export default {
     equipmentManage
   },
   watch:{
-    'currentPartitionLevel': function(n) {
-      let arr = n.split('-')
-      arr = arr.map( v => Number(v))
-      this.levelArr = arr
-      console.log('this.partitionedList');
-      console.log(this.partitionedList[this.levelArr[0]].partitionName);
-      console.log(this.levelArr.length);
-    }      
+    'currentPartitionLevel':{
+      handler: function(n){
+        let arr = n.split('-')
+        arr = arr.map( v => Number(v))
+        this.levelArr = arr
+      },
+      immediate: true
+    }
+  },
+  methods:{
+    changeIsCloseMonitor(flag){
+      this.isCloseMonitor = flag
+    }
   }
 }
 </script>
