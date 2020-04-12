@@ -35,3 +35,12 @@ export const getVideoMonitorInfo = (obj) => {
     params: obj
   })
 }
+
+//  获取视频编号
+export const getVideoIndexCode = (obj) => {
+  return request({
+    url: '/videoMonitor/getVideoIndexCode',
+    method: 'get',
+    params: obj
+  })
+}
