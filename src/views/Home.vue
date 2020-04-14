@@ -208,6 +208,13 @@
           console.log("关闭ws-setAlarmList");
         };
       },
+      errorBox() {
+        this.$notify({
+          title: "提示",
+          message: "数据监控出现异常，请刷新网页",
+          duration: 0
+        });
+      },
       closeWarnDialog(){
         this.isWarnBox = false
       },

@@ -185,8 +185,10 @@ export default {
       this.getHistoryList()
     },
     partitionId: {
-      handler: function() {
-        this.getFilterData();
+      handler: function(n) {
+        if(n != ''){
+          this.getFilterData();
+        }
       },
       immediate: true
     },
@@ -229,9 +231,12 @@ export default {
       if(this.valueTime.length > 0){
         Object.assign(obj,{
           startTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss'),
-          endTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss')
+          endTs: new Date(this.valueTime[1]).format('yyyy-MM-dd hh:mm:ss')
         })
       }
+
+      // eslint-disable-next-line no-debugger
+      debugger
 
       getHistoryRecord(obj).then(res => {
         this.historyList = res.data.values;
@@ -241,6 +246,9 @@ export default {
     },
     // 获取走势图数据
     setEchartsData() {
+      if(!this.radioArr || this.radioArr.length== 0){
+        return
+      }
       if (this.wsObj) {
         this.wsObj.close(1000);
       }
@@ -249,7 +257,6 @@ export default {
           this.radioArr[this.radio].subscribeId
         }&deviceId=${this.filterArr2[Number(this.activeIndex2)].id}`
       );
-
       this.wsObj.onopen = function() {
         console.log("打开ws-setEchartsData");
       };
