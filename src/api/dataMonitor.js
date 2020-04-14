@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export const getHistoryRecord = (obj) => {
   return request({
     url: '/dataMonitor/getHistoryRecord',
-    method: 'get',
-    params: obj
+    method: 'post',
+    data: obj
   })
 }
 

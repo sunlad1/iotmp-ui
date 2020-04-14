@@ -17,18 +17,18 @@
           </div>
 
           <div class="searchWrapper" style="padding: 0 20px">
-            <p>巡检人</p>
-            <el-select v-model="curPersonList" placeholder="请选择">
+            <p style="white-space:nowrap;">巡检人</p>
+            <!-- <el-select v-model="curPersonList" placeholder="请选择">
               <el-option
                 v-for="item in personList"
                 :key="item.id"
                 :label="item.realName"
                 :value="item.id">
               </el-option>
-            </el-select>
-            <!-- <el-input v-model="historySearch" placeholder="请输入设备昵称"></el-input> -->
+            </el-select> -->
+            <el-input v-model="curPersonList" placeholder="请输入"></el-input>
           </div>
-          <el-button type="info" size="mini" @click="searchClicked">查询</el-button>         
+          <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>         
           <el-button type="info" size="mini" @click="clearSearch">重置</el-button>         
           <el-button type="primary" size="mini" @click="dialogTableVisible = true">新增</el-button>         
         </div>
@@ -59,53 +59,51 @@
       </div>      
     </div>
 
- 
-<el-dialog :visible.sync="dialogTableVisible" :fullscreen="true">
-  <div class="fullWrapper">
-    <div class="addDialog">
-      <div class="closeBtn" @click="closeDialog"></div>
-      <div class="dialogHeader">
-          <img src="/static/imgs/operationManage/operationIcon.png" alt />
-          <p style="margin-right:auto">运维信息新增</p>
-      </div>
-      <div class="dialogForm">
-        <el-form ref="form" :model="form" label-width="100px">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="巡检地址">
-                <el-input placeholder="请输入" v-model="form.location"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="巡检人">
-                <el-select v-model="form.inspectionUsrId" placeholder="请选择">
-                  <el-option
-                    v-for="item in personList"
-                    :key="item.id"
-                    :label="item.realName"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="巡检事项说明">
-                <el-input type="textarea" placeholder="请输入" v-model="form.inspectionExplain"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <div class="operationWrapper">
-        <el-button size="mini" type="primary" @click="onSubmit">提交</el-button>
-        <el-button size="mini" @click="clearDialogSubmit">取消</el-button>
+  <el-dialog :visible.sync="dialogTableVisible" :fullscreen="true">
+    <div class="fullWrapper">
+      <div class="addDialog">
+        <div class="closeBtn" @click="closeDialog"></div>
+        <div class="dialogHeader">
+            <img src="/static/imgs/operationManage/operationIcon.png" alt />
+            <p style="margin-right:auto">运维信息新增</p>
+        </div>
+        <div class="dialogForm">
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="巡检地址">
+                  <el-input placeholder="请输入" v-model="form.location"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="巡检人">
+                  <el-input v-model="form.inspectionUsrName" placeholder="请输入"></el-input>
+                  <!-- <el-select v-model="form.inspectionUsrId" placeholder="请选择">
+                    <el-option
+                      v-for="item in personList"
+                      :key="item.id"
+                      :label="item.realName"
+                      :value="item.id">
+                    </el-option>
+                  </el-select> -->
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="巡检事项说明">
+                  <el-input type="textarea" placeholder="请输入" v-model="form.inspectionExplain"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+        <div class="operationWrapper">
+          <el-button size="mini" type="primary" @click="onSubmit">提交</el-button>
+          <el-button size="mini" @click="clearDialogSubmit">取消</el-button>
+        </div>
       </div>
     </div>
-  </div>
-  
-</el-dialog>
-
-
+    
+  </el-dialog>
 
 	</div>
 </template>
@@ -119,7 +117,7 @@ export default {
 		return {
       form:{
         location: '',
-        inspectionUsrId: '',
+        inspectionUsrName: '',
         inspectionExplain: ''
       },
 			historyAlarmList: [],
@@ -198,22 +196,16 @@ export default {
     clearSearch(){
       this.curPersonList = ''
       this.valueTime = []
-      this.searchPage.page = 1;
-      this.historyAlarmList = [];
-      this.getHistoryList();
     },
     handleEdit(){
 
     },
     searchClicked(){
       // 重新搜索 
-      if(this.curPersonList === '' && this.valueTime.length <= 0){
-        return
-      }
       if(this.curPersonList === ''){
-        delete this.searchPage.curPersonList
+        delete this.searchPage.inspectionUsrName
       }else{
-        this.searchPage.inspectionUsrId = this.curPersonList
+        this.searchPage.inspectionUsrName = this.curPersonList
       }
       if(this.valueTime.length <= 0){
         delete this.searchPage.startDate

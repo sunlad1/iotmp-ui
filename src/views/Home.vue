@@ -193,12 +193,13 @@
 
         this.wsLeftArr[0].onmessage = res => {
           this.alarmList = JSON.parse(res.data);
+          console.log('推送 是首页的');
           if(this.alarmList.length > 0){
             this.isWarnBox = true
           }
         };
 
-        this.wsLeftArr[0].onclose = function(val) {
+        this.wsLeftArr[0].onclose = (val) => {
           // 关闭 websocket
           this.alarmList = [];
           if (val.code != 1000) {

@@ -16,7 +16,36 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <div class="clickBtn addTimeBox" @click="relieveHandleEdit(scope.$index, scope.row)" style="color: #009dd5">
-                  <p>解除报警</p>
+
+                  <el-popover
+                    v-model="scope.row.isShow"
+                    placement="bottom"
+                    width="400"
+                    trigger="manual">
+                    <div class="slotGrid">
+                      <div class="top">
+                        <span>在</span>
+                        <div style="margin: 0 .11rem">
+                          <el-date-picker
+                            size="mini"
+                            v-model="relieveTime"
+                            type="datetime"
+                            placeholder="请选择时间">
+                          </el-date-picker>
+                        </div>
+                        <span>之前不再报警</span>
+                      </div>
+                      <div class="operationGrid">
+                        <el-button type="primary" size="mini" @click="confirmWarn(scope.$index,scope.row)">删除</el-button>
+                        <el-button size="mini" @click="cancleWarn(scope.$index)">取消</el-button>
+                      </div>
+                    </div>
+                    <p slot="reference" @click="checkwarn(scope.$index, scope.row)">解除报警</p>
+                    <!-- <el-button slot="reference">解除报警</el-button> -->
+                  </el-popover>
+                  
+                  
+                  <!-- <p>解除报警</p>
                   <div class="chooseTimeGrid">
                     <el-date-picker
                       :prefix-icon="''"
@@ -25,7 +54,7 @@
                       type="datetime"
                       placeholder="解除报警">
                     </el-date-picker>
-                  </div>
+                  </div> -->
                 </div>
                 <!-- <span class="clickBtn" @click="handleEdit(scope.$index, scope.row)" style="color: #009dd5">解除报警</span> -->
                 <span style="padding:0 5px;color: #16EAF7;">|</span>
@@ -104,8 +133,8 @@
             </el-cascader>
             <!-- <el-input v-model="historySearch" placeholder="请输入设备昵称"></el-input> -->
           </div>
-          <el-button type="info" size="mini" @click="searchClicked">查询</el-button>         
-          <el-button type="info" plain size="mini">重置</el-button>         
+          <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>         
+          <el-button type="info" plain size="mini" @click="clearSearch">重置</el-button>         
         </div>
         <div class="dataGrid" id="historyDataHeight">
           <el-table :height="historyTableHeight" :data="historyAlarmList" style="width: 100%">
@@ -185,6 +214,7 @@ export default {
   name: "warnList",
   data() {
     return {
+      isShow: false,
       textarea: '',
       currentId: '',
       dialogVisible: false,
@@ -244,6 +274,41 @@ export default {
     }
   },
   methods: {
+    confirmWarn(index){
+      if(this.relieveTime == ''){
+        this.$message({
+          type: 'error',
+          message: '请选择时间'
+        });     
+        return
+      }
+      removeAlarm({
+        alarmId: this.alarmId,
+        endTime: new Date(this.relieveTime).format("yyyy-MM-dd hh:mm:ss")
+      }).then(() => {
+        this.alarmList[index].isShow = false
+        this.relieveTime = ''
+        this.$message({
+          type: 'success',
+          message: '解除成功'
+        });        
+      }).catch( err => {
+        this.relieveTime = ''
+        this.$message({
+          type: 'error',
+          message: err
+        });
+      })
+    },
+    cancleWarn(index){
+      this.$set(this.alarmList[index], 'isShow',false )
+    },
+    checkwarn(index){
+      this.alarmList.forEach((res,i) => {
+        this.$set(this.alarmList[i], 'isShow',false )
+      })
+      this.$set(this.alarmList[index], 'isShow',true )
+    },
     handleCurrentChange(e) {
       // 分页数据改变
       this.searchPage.page = e;
@@ -255,14 +320,20 @@ export default {
           v.startTs = new Date(v.startTs).format("yyyy-MM-dd hh:mm:ss")
           v.endTs = new Date(v.endTs).format("yyyy-MM-dd hh:mm:ss")
         })
-        this.historyAlarmList = [...this.historyAlarmList,...res.data.content]
+        this.historyAlarmList = res.data.content
         this.totalDataNum = res.data.totalElements;
       })
+    },
+    clearSearch(){
+      this.searchId = ''
+      this.searchNameId = ''
+      this.cascaderValue = ''
+      this.cascaderValue1 = ''
     },
     searchClicked(){
       // 重新搜索 
       if(this.searchId === ''){
-        return
+        delete this.searchPage.partitionId
       }else{
         this.searchPage.partitionId = this.searchId
       }
@@ -322,8 +393,18 @@ export default {
       removeAlarm({
         alarmId: this.alarmId,
         endTime: new Date(this.relieveTime).format("yyyy-MM-dd hh:mm:ss")
-      }).then(res => {
-        console.log(res + '解除成功');
+      }).then(() => {
+        this.relieveTime = ''
+        this.$message({
+          type: 'error',
+          message: '解除成功'
+        });        
+      }).catch( err => {
+        this.relieveTime = ''
+        this.$message({
+          type: 'error',
+          message: err
+        });
       })
     },
     confirmRecord(){
@@ -387,8 +468,7 @@ export default {
 
       this.wsLeftArr[0].onmessage = res => {
         this.alarmList = JSON.parse(res.data);
-        console.log('推送内容');
-        console.log(this.alarmList);
+        console.log('推送 不是首页的');
       };
 
       this.wsLeftArr[0].onclose = function(val) {
@@ -438,6 +518,30 @@ export default {
 </script>
 
 <style lang="less">
+.el-popper[x-placement^=left] .popper__arrow::after{
+  background: transparent !important;
+}
+.el-popover{
+  width: auto !important;
+}
+.slotGrid{
+  padding: .25rem .1889rem;
+  .operationGrid{
+    display: flex;
+    margin-top: .157rem;
+  }
+  .el-date-editor.el-input{
+    width: auto !important;
+  }
+  .top{
+    display: flex;
+    align-items: center;
+    span{
+      color: #00C3FF;
+      font-size: .125rem;
+    }
+  }
+}
   .popper__arrow::after{
     border-top-color: #009dd5 !important;
   }

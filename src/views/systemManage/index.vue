@@ -9,7 +9,7 @@
             <p>用户名</p>
             <el-input v-model="valueTime" placeholder="请输入"></el-input>
           </div>
-          <el-button type="info" size="mini" @click="searchClicked">查询</el-button>
+          <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>
           <el-button type="info" size="mini" @click="clearSearch">重置</el-button>
           <el-button type="primary" size="mini" @click="addClicked()" v-if="userInfo.roleId == 0">新增</el-button>
         </div>

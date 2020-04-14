@@ -51,7 +51,19 @@
         <div class="inGrid">
           <div class="titleGrid" id="monitorGrid">
             <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
-            <p>{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
+            <p style="margin-right: auto;">{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
+            <div class="searchWrapper">
+              <p>设备采集起止时间</p>
+              <el-date-picker
+                v-model="valueTime"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </div>
+            <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>         
+            <el-button type="info" size="mini" @click="clearSearch">重置</el-button>    
           </div>
           <div class="dataGrid" id="dataHeight">
             <el-table :height="tableHeight" :data="historyList" style="width: 100%">
@@ -134,6 +146,7 @@ function randomData() {
 export default {
   data() {
     return {
+      valueTime:[],
       tableList:[],
       activeIndex1: null,
       activeIndex2: null,
@@ -204,14 +217,33 @@ export default {
     }
   },
   methods: {
+    clearSearch(){
+      this.valueTime = []
+    },
+    searchClicked(){
+      let obj = {
+        deviceId: this.filterArr2[Number(this.activeIndex2)].id,
+        page: 1
+      }
+
+      if(this.valueTime.length > 0){
+        Object.assign(obj,{
+          startTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss'),
+          endTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss')
+        })
+      }
+
+      getHistoryRecord(obj).then(res => {
+        this.historyList = res.data.values;
+        this.totalDataNum = res.data.total;
+        this.tableList = res.data.subscribeTitles
+      });
+    },
     // 获取走势图数据
     setEchartsData() {
       if (this.wsObj) {
         this.wsObj.close(1000);
       }
-      console.log(this.radioArr);
-      console.log(this.radio);
-      
       this.wsObj = new WebSocket(
         `ws://${websoketURL}/ws/getMeterHistoryRecord?subscribeId=${
           this.radioArr[this.radio].subscribeId
@@ -228,7 +260,7 @@ export default {
         console.log("this.echartsData");
       };
 
-      this.wsObj.onclose = function(val) {
+      this.wsObj.onclose = (val) => {
         // 关闭 websocket
         this.echartsData = [];
         if (val.code != 1000) {
@@ -299,7 +331,13 @@ export default {
       this.activeIndex2 = String(key)
     },
     initEcharts() {
-      console.log("xxx");
+      // 找到y的最大值
+      let num = 0;
+      this.echartsData.forEach(v => {
+        if(Number(v.value[1]) > num){
+          num = Number(v.value[1])
+        }
+      })
       let myChart = echarts.init(document.getElementById("chartsGrid"));
       let option = {
         grid: {
@@ -326,6 +364,9 @@ export default {
         yAxis: {
           type: "value",
           boundaryGap: [0, "100%"],
+          max: function() {
+              return Number(num);
+          },
           splitLine: {
             show: true,
             lineStyle: {
@@ -373,6 +414,9 @@ export default {
   padding-left: 25px;
   display: flex;
   flex-direction: column;
+    .el-input__inner{
+      height: 28px;
+    }
   .monitorWrapper {
     display: flex;
     flex-direction: column;
@@ -384,6 +428,12 @@ export default {
       display: flex;
       align-items: center;
       padding-left: 0.15rem;
+      input{
+        background-color: transparent;
+      }
+      .el-date-editor .el-range-separator{
+        line-height: initial;
+      }
       p {
         font-size: 0.18rem;
         margin: 0;
@@ -392,6 +442,19 @@ export default {
         width: 0.15rem;
         height: 0.15rem;
         margin-right: 0.11rem;
+      }
+      .el-input__icon{
+        line-height: initial;
+      }
+      .searchWrapper{
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+        p{
+          font-size: 0.13rem;
+          margin: 0;
+          padding-right: 0.1rem;
+        }
       }
     }
     .monitorTableGrid {

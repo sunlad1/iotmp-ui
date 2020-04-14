@@ -30,7 +30,7 @@
             </el-select>-->
             <!-- <el-input v-model="historySearch" placeholder="请输入设备昵称"></el-input> -->
           </div>
-          <el-button type="info" size="mini" @click="searchClicked">查询</el-button>
+          <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>
           <el-button type="info" size="mini" @click="clearSearch">重置</el-button>
           <el-button type="primary" size="mini" @click="addClicked()">新增</el-button>
         </div>
@@ -270,9 +270,6 @@ export default {
     clearSearch() {
       this.curPersonList = "";
       this.valueTime = "";
-      this.searchPage.page = 1;
-      this.historyAlarmList = [];
-      this.getHistoryList();
     },
     handleEdit(index,row) {
       this.isAdd = false
@@ -286,11 +283,9 @@ export default {
     },
     searchClicked() {
       // 重新搜索
-      if (this.curPersonList === "" && this.valueTime === "") {
-        return;
-      }
       if (this.curPersonList === "") {
-        delete this.deviceName.curPersonList;
+        // delete this.deviceName.curPersonList;
+        delete this.searchPage.deviceName
       } else {
         this.searchPage.deviceName = this.curPersonList;
       }

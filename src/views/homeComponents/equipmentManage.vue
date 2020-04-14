@@ -27,14 +27,14 @@
                 <el-table-column
                   prop="deviceValue"
                   label="状态"
-                  width="70px"
+                  width="60px"
                 >
                 </el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
                     <div class="operrateGrid">
                       <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
-                        <span @click="handleEdit(el.id)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
+                        <span @click="handleEdit(el)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
                         <span style="color: #009dd5;padding:0 2px" class="bar">|</span>
                       </div>
                     </div>
@@ -47,6 +47,21 @@
         </div>
       </div>
     </div>
+    <dialogBox 
+      :dialogTableVisible="dialogTableVisible" 
+      @closeDialog="closeDialog" 
+      @clearDialogSubmit="clearDialogSubmit" 
+      @onSubmit="onSubmit"
+    >
+    
+      <template v-slot:header>
+        <img src="/static/imgs/operationManage/operationIcon.png" alt />
+        <p style="margin-right:auto">设备{{ operateId.operateName }}信息确认</p>
+      </template>
+      <template v-slot:middle>
+        <p class="middleEquipment">您确定{{ operateId.operateName }}该设备吗？</p>
+      </template> 
+    </dialogBox>
   </div>
 </template>
 
@@ -54,16 +69,22 @@
 import { getOperateDeviceTypes, setOperate } from '@/api/home'
 import { websoketURL } from '@/config/env'
 import { mapGetters } from 'vuex'
+import dialogBox from '@/components/dialogBox'
 
 export default {
+  components:{
+    dialogBox
+  },
   data(){
     return {
+      dialogTableVisible: false,
       clearIndex: 0,
       totalData: [],
       tableData: [],
       checkList:[],
       typeList:[],
-      wsArr: []
+      wsArr: [],
+      operateId: ''
     }
   },
   computed:{
@@ -89,9 +110,16 @@ export default {
     this.closeAllWs()
   },
   methods:{
-    handleEdit(id){
+    closeDialog(){
+      this.dialogTableVisible = false
+    },
+    clearDialogSubmit(){
+      this.dialogTableVisible = false
+    },
+    onSubmit(){
+      this.dialogTableVisible = false
       setOperate({
-        operateId: id
+        operateId: this.operateId.id
       }).then(res => {
         if(res.status != 200){
           this.$notify.error({
@@ -111,6 +139,10 @@ export default {
           message: '操作失败'
         });
       })
+    },
+    handleEdit(el){
+      this.operateId = el
+      this.dialogTableVisible = true
     },
     initList(){
       this.typeList.map((el,index) => {
@@ -207,6 +239,12 @@ export default {
 </script>
 
 <style lang="less">
+.middleEquipment{
+  font-size:.125rem;
+  font-weight:normal;
+  color:rgba(221,221,221,1);
+  height: 1rem;
+}
 .equipmentWarn{
   height: 100%;
   padding-top: .15rem;

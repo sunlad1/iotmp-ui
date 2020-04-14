@@ -409,7 +409,7 @@ export default {
   },
   methods: {
     closeDialog(){
-
+      this.dialogTableVisible = false
     },
     clearDialogSubmit(){
       this.dialogTableVisible = false

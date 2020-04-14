@@ -147,6 +147,8 @@
     background: transparent !important;
     color: #787DB8;
   }
-
+      input{
+        background-color: transparent;
+      }
 </style>
 
