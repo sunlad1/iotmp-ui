@@ -157,7 +157,7 @@ export default {
       pageNumber: 1,
       tableHeight: "0",
       wsObj: null,
-      radioArr: [],
+      radioArr: [1],
       radio: null,
       echartsData: [],
       echartStyle: {
@@ -184,7 +184,7 @@ export default {
       this.pageNumber = 1
       this.getHistoryList()
     },
-    partitionId: {
+    'partitionId': {
       handler: function(n) {
         if(n != ''){
           this.getFilterData();
@@ -234,10 +234,6 @@ export default {
           endTs: new Date(this.valueTime[1]).format('yyyy-MM-dd hh:mm:ss')
         })
       }
-
-      // eslint-disable-next-line no-debugger
-      debugger
-
       getHistoryRecord(obj).then(res => {
         this.historyList = res.data.values;
         this.totalDataNum = res.data.total;
@@ -246,7 +242,6 @@ export default {
     },
     // 获取走势图数据
     setEchartsData() {
-      console.log('dsdsadsada执行次数');
       if(!this.radioArr || this.radioArr.length== 0){
         return
       }
@@ -265,7 +260,6 @@ export default {
       this.wsObj.onmessage = res => {
         this.echartsData = JSON.parse(res.data);
         this.initEcharts();
-        console.log("this.echartsData");
       };
 
       this.wsObj.onclose = (val) => {
@@ -339,13 +333,30 @@ export default {
       this.activeIndex2 = String(key)
     },
     initEcharts() {
+      console.log('------------------');
+      
       // 找到y的最大值
-      let num = 0;
-      this.echartsData.forEach(v => {
+      let num = this.echartsData[0] && Number(this.echartsData[0].value[1]) || 0;
+      let minNum = this.echartsData[0] && Number(this.echartsData[0].value[1]) || 0;
+      (this.echartsData || []).forEach(v => {
         if(Number(v.value[1]) > num){
           num = Number(v.value[1])
         }
+
+        if(Number(v.value[1]) < minNum){
+          minNum = Number(v.value[1])
+        }
+
       })
+
+      if(num == minNum){
+        num = num + 0.01
+      }
+
+      console.log(num);
+      console.log(minNum);
+      
+
       let myChart = echarts.init(document.getElementById("chartsGrid"));
       let option = {
         grid: {
@@ -374,6 +385,9 @@ export default {
           boundaryGap: [0, "100%"],
           max: function() {
               return Number(num);
+          },
+          min: function() {
+              return Number(minNum);
           },
           splitLine: {
             show: true,

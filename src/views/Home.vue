@@ -185,7 +185,8 @@
         }
 
         this.wsLeftArr[0] = new WebSocket(
-          `ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${this.partitionId}`
+          // `ws://${websoketURL}/ws/getUnRemovedAlarmList?partitionId=${this.partitionId}`
+          `ws://${websoketURL}/ws/getUnRemovedAlarmList`
         );
         this.wsLeftArr[0].onopen = function() {
           console.log("打开ws-setAlarmList");

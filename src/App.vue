@@ -147,8 +147,17 @@
     background: transparent !important;
     color: #787DB8;
   }
-      input{
-        background-color: transparent;
-      }
+  input{
+    background-color: transparent;
+  }
+  .el-popover{
+    background: rgba(0,0,0,.8) !important;
+    border: 1px solid rgb(0, 157, 213) !important;
+    .el-popconfirm__main{
+      color: rgb(0, 157, 213) !important;
+    }
+  }
+
+
 </style>
 

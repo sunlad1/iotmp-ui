@@ -34,7 +34,15 @@
                   <template slot-scope="scope">
                     <div class="operrateGrid">
                       <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
-                        <span @click="handleEdit(el)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
+
+                        <el-popconfirm
+                          :title="`您确定${el.operateName}该设备吗？`"
+                          @onConfirm="resetPassword()"
+                        >
+                          <span slot="reference" @click="handleEdit(el)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span>
+                          <!-- <el-button slot="reference">删除</el-button> -->
+                        </el-popconfirm>
+                        <!-- <span @click="handleEdit(el)" style="color: #009dd5;cursor: pointer;">{{ el.operateName }}</span> -->
                         <span style="color: #009dd5;padding:0 2px" class="bar">|</span>
                       </div>
                     </div>
@@ -140,9 +148,32 @@ export default {
         });
       })
     },
+    resetPassword(){
+      setOperate({
+        operateId: this.operateId.id
+      }).then(res => {
+        if(res.status != 200){
+          this.$notify.error({
+            title: '错误',
+            message: '操作失败'
+          });
+        }else{
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success'
+          });
+        }
+      }).catch(() => {
+        this.$notify.error({
+          title: '错误',
+          message: '操作失败'
+        });
+      })
+    },
     handleEdit(el){
       this.operateId = el
-      this.dialogTableVisible = true
+      // this.dialogTableVisible = true
     },
     initList(){
       this.typeList.map((el,index) => {
@@ -256,7 +287,8 @@ export default {
   flex-direction: column;
   .operrateGrid{
     display: flex;
-    & div:nth-last-child(1) span:nth-last-child(1){
+    // & div:nth-last-child(1) span:nth-last-child(1){
+    & div:nth-last-child(1) .bar{
       color: transparent !important;
     }
   }

@@ -462,7 +462,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less" scoped>
+<style lang="less">
 .video-surveillance {
   width: 100%;
   max-width: 100%;
@@ -474,6 +474,13 @@ export default {
   background: url("./../assets/images/surveillance.png") center center no-repeat;
   // background-size: contain;
   background-size: 100% 100%;
+
+
+  // .addDialog{
+  //   position: fixed !important;
+  //   bottom: 0 !important;
+  //   left: 0 !important;
+  // }
 
   .header {
     display: flex;
