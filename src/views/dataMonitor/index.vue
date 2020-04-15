@@ -158,7 +158,7 @@ export default {
       tableHeight: "0",
       wsObj: null,
       radioArr: [],
-      radio: 0,
+      radio: null,
       echartsData: [],
       echartStyle: {
         width: 0,
@@ -246,6 +246,7 @@ export default {
     },
     // 获取走势图数据
     setEchartsData() {
+      console.log('dsdsadsada执行次数');
       if(!this.radioArr || this.radioArr.length== 0){
         return
       }
@@ -291,7 +292,7 @@ export default {
         });
         this.radioArr = res.data || [];
         this.radio = 0
-        this.setEchartsData()
+        // this.setEchartsData()
         // this.radio = this.radioArr.length > 0 && this.radioArr[0].subscribeId;
         // this.historyList = res.data
       } catch (error) {
@@ -323,7 +324,7 @@ export default {
         this.filterArr2 = res.data[0].deviceList;
         this.activeIndex1 = "0";
         this.activeIndex2 = "0";
-        this.radio = 0;
+        this.radio = null;
       });
     },
     initAllVariable() {
