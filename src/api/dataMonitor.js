@@ -26,3 +26,12 @@ export const getChartsDataKeys = (obj) => {
       params: obj
     })
   }
+
+// 获取 走势图数据
+export const getMeterHistoryRecord = (obj) => {
+  return request({
+    url: '/dataMonitor/getMeterHistoryRecord',
+    method: 'post',
+    data: obj
+  })
+}

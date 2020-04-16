@@ -109,10 +109,11 @@
 import {
   getHistoryRecord,
   getAllDeviceGroup,
-  getChartsDataKeys
+  getChartsDataKeys,
+  getMeterHistoryRecord
 } from "@/api/dataMonitor";
 import { mapGetters } from "vuex";
-import { websoketURL } from "@/config/env";
+// import { websoketURL } from "@/config/env";
 
 var echarts = require("echarts/lib/echarts");
 require("echarts/lib/chart/line");
@@ -233,6 +234,14 @@ export default {
           startTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss'),
           endTs: new Date(this.valueTime[1]).format('yyyy-MM-dd hh:mm:ss')
         })
+
+      this.setEchartsData({
+        startTs: new Date(this.valueTime[0]).format('yyyy-MM-dd hh:mm:ss'),
+        endTs: new Date(this.valueTime[1]).format('yyyy-MM-dd hh:mm:ss')
+      })
+
+      }else{
+        this.setEchartsData()
       }
       getHistoryRecord(obj).then(res => {
         this.historyList = res.data.values;
@@ -241,35 +250,46 @@ export default {
       });
     },
     // 获取走势图数据
-    setEchartsData() {
-      if(!this.radioArr || this.radioArr.length== 0){
-        return
+    setEchartsData(timeObj) {
+      let obj = {
+        subscribeId: this.radioArr[this.radio].subscribeId,
+        deviceId: this.filterArr2[Number(this.activeIndex2)].id
       }
-      if (this.wsObj) {
-        this.wsObj.close(1000);
+      if(timeObj){
+        Object.assign(obj, timeObj)
       }
-      this.wsObj = new WebSocket(
-        `ws://${websoketURL}/ws/getMeterHistoryRecord?subscribeId=${
-          this.radioArr[this.radio].subscribeId
-        }&deviceId=${this.filterArr2[Number(this.activeIndex2)].id}`
-      );
-      this.wsObj.onopen = function() {
-        console.log("打开ws-setEchartsData");
-      };
-
-      this.wsObj.onmessage = res => {
-        this.echartsData = JSON.parse(res.data);
+      getMeterHistoryRecord(obj).then(res => {
+        this.echartsData = res.data;
         this.initEcharts();
-      };
+      })
+      // if(!this.radioArr || this.radioArr.length== 0){
+      //   return
+      // }
+      // if (this.wsObj) {
+      //   this.wsObj.close(1000);
+      // }
+      // this.wsObj = new WebSocket(
+      //   `ws://${websoketURL}/ws/getMeterHistoryRecord?subscribeId=${
+      //     this.radioArr[this.radio].subscribeId
+      //   }&deviceId=${this.filterArr2[Number(this.activeIndex2)].id}`
+      // );
+      // this.wsObj.onopen = function() {
+      //   console.log("打开ws-setEchartsData");
+      // };
 
-      this.wsObj.onclose = (val) => {
-        // 关闭 websocket
-        this.echartsData = [];
-        if (val.code != 1000) {
-          this.errorBox();
-        }
-        console.log("关闭ws-setEchartsData");
-      };
+      // this.wsObj.onmessage = res => {
+      //   this.echartsData = JSON.parse(res.data);
+      //   this.initEcharts();
+      // };
+
+      // this.wsObj.onclose = (val) => {
+      //   // 关闭 websocket
+      //   this.echartsData = [];
+      //   if (val.code != 1000) {
+      //     this.errorBox();
+      //   }
+      //   console.log("关闭ws-setEchartsData");
+      // };
     },
     errorBox() {
       this.$notify({
