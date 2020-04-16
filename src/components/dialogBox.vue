@@ -57,12 +57,17 @@ export default {
       display: flex;
       justify-content: flex-end;
       padding-right: 0.3rem;
+      position: absolute;
+      bottom: 20px;
+      right: 0;
     }
     .dialogForm {
       box-sizing: border-box;
       padding-left: 0.6rem;
       padding-right: 0.3rem;
-      padding-top: 0.3rem;
+      margin-top: 0.3rem;
+      max-height: 1.2rem;
+      overflow: auto;
     }
     .dialogHeader {
       padding-top: 0.23rem;

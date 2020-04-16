@@ -131,7 +131,7 @@ export default {
       width: 100%;
       height: 100%;
       .left {
-        flex: 0 0 32.38%;
+        flex: 0 0 34.38%;
       }
       .right {
         height: auto;

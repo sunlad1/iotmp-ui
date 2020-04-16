@@ -333,8 +333,6 @@ export default {
       this.activeIndex2 = String(key)
     },
     initEcharts() {
-      console.log('------------------');
-      
       // 找到y的最大值
       let num = this.echartsData[0] && Number(this.echartsData[0].value[1]) || 0;
       let minNum = this.echartsData[0] && Number(this.echartsData[0].value[1]) || 0;
@@ -352,10 +350,6 @@ export default {
       if(num == minNum){
         num = num + 0.01
       }
-
-      console.log(num);
-      console.log(minNum);
-      
 
       let myChart = echarts.init(document.getElementById("chartsGrid"));
       let option = {

@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">
         <div class="ico"></div>
-        <span style="display:inline-block;margin-right:auto">防火分区</span>
+        <span style="display:inline-block;margin-right:auto">视屏监控</span>
         <el-radio-group v-model="monitorType">
           <el-radio :label="0">预览</el-radio>
           <el-radio :label="1">回放</el-radio>
@@ -35,7 +35,6 @@
       @clearDialogSubmit="clearDialogSubmit" 
       @onSubmit="onSubmit"
     >
-    
       <template v-slot:header>
         <img src="/static/imgs/operationManage/operationIcon.png" alt />
         <p style="margin-right:auto">设置回放信息</p>
@@ -47,8 +46,8 @@
               <el-form-item label="监控编号">
                 <el-select v-model="form.codeActive" placeholder="请选择">
                   <el-option
-                    v-for="item in codeList"
-                    :key="item.code"
+                    v-for="(item,index) in codeList"
+                    :key="index"
                     :label="item.name"
                     :value="item.code">
                   </el-option>
@@ -69,8 +68,38 @@
           </el-row>
         </el-form>
       </template>    
-
     </dialogBox>
+
+    <dialogBox 
+      :dialogTableVisible="dialogTableVisible1" 
+      @closeDialog="closeDialog1" 
+      @clearDialogSubmit="clearDialogSubmit1" 
+      @onSubmit="onSubmit1"
+    >
+      <template v-slot:header>
+        <img src="/static/imgs/operationManage/operationIcon.png" alt />
+        <p style="margin-right:auto">设置预览信息</p>
+      </template>
+      <template v-slot:middle>
+        <el-form ref="form" :model="form" label-width="100px">
+          <el-row :gutter="20">
+            <el-col :span="12" v-for="(el,i) in monitorForm" :key="i">
+              <el-form-item label="监控编号">
+                <el-select v-model="el.active" placeholder="请选择">
+                  <el-option
+                    v-for="(item,index) in el.list"
+                    :key="index"
+                    :label="item.name"
+                    :value="item.code">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </template>    
+    </dialogBox>
+
   </div>
 </template>
 <script src="jsWebControl-1.0.0.min.js"></script>
@@ -85,7 +114,7 @@ var initCount = 0;
 var pubKey = "";
 var widthGrid = 0;
 var heightGrid = 0;
-var playModeValue = 0;
+var playModeValue = 0;  //0 预览 1 回放
 var layoutNum = 2;
 var codeList = []
 var form = {}
@@ -153,28 +182,6 @@ function initPlugin() {
   });
 }
 
-// function startpreview() {
-//   let pointCode = this.pointCode;
-//   let cameraIndexCode = pointCode; //获取输入的监控点编号值，必填
-//   let streamMode = 0; //主子码流标识：0-主码流，1-子码流
-//   let transMode = 1; //传输协议：0-UDP，1-TCP
-//   let gpuMode = 0; //是否启用GPU硬解，0-不启用，1-启用
-//   let wndId = -1; //播放窗口序号（在2x2以上布局下可指定播放窗口）
-//   cameraIndexCode = cameraIndexCode.replace(/(^\s*)/g, "");
-//   cameraIndexCode = cameraIndexCode.replace(/(\s*$)/g, "");
-//   this.oWebControl.JS_RequestInterface({
-//     funcName: "startPreview",
-//     argument: JSON.stringify({
-//       cameraIndexCode: cameraIndexCode, //监控点编号
-//       streamMode: streamMode, //主子码流标识
-//       transMode: transMode, //传输协议
-//       gpuMode: gpuMode, //是否开启GPU硬解
-//       wndId: wndId //可指定播放窗口
-//     })
-//   });
-// }
-
-
 //初始化
 function init() {
   getPubKey(function() {
@@ -192,7 +199,7 @@ function init() {
         var videoDir = data.videoDir; //紧急录像或录像剪辑存储路径
         if(playModeValue == 0){
           var layout = `${layoutNum}x${layoutNum}`; //playMode指定模式的布局
-        }else{
+        }else if(playModeValue == 1){
           var layout = `1x1`; //playMode指定模式的布局
         }
         var enableHTTPS = 1; //是否启用HTTPS协议与综合安防管理平台交互，是为1，否为0
@@ -222,11 +229,10 @@ function init() {
       })
       .then(function() {
         if(playModeValue == 0){
-          // startpreview()
           codeList.forEach((v,index) => {
             previewStart(v.code,index + 1)
           })
-        }else{
+        }else if(playModeValue == 1){
           playBack()
         }
         // oWebControl.JS_Resize(1108, 600);  // 初始化后resize一次，规避firefox下首次显示窗口后插件窗口未与DIV窗口重合问题
@@ -335,8 +341,10 @@ export default {
   },
   data() {
     return {
+      monitorForm:[],
+      dialogTableVisible1: false,
       dialogTableVisible: false,
-      monitorType: 0,
+      monitorType: null,
       selectData: [{}],
       current: [0],
       codeList: [],
@@ -361,24 +369,28 @@ export default {
     },
     'monitorType': function(n){
       if(n == 0){
-
+        this.dialogTableVisible1 = true
+        // codeList = [...codeList,...codeList,...codeList]
+        this.monitorForm = []
+        this.codeList.forEach(v => {
+          this.monitorForm.push({
+            list: codeList,
+            active: ''
+          })
+        })
         oWebControl.JS_RequestInterface({
             funcName: "stopAllPlayback"
         })
 
         playModeValue = 0
-        this.closeWindow(() => {
-            initPlugin()
-        })
-      }else{
-
+        this.closeWindow(() => {})
+      }else if(n == 1){
+        this.dialogTableVisible = true
         oWebControl.JS_RequestInterface({
             funcName: "stopAllPreview"
         });
-        
-        this.dialogTableVisible = true
-        this.closeWindow(() => {
-        })
+        playModeValue = 1
+        this.closeWindow(() => {})
       }
     }
   },
@@ -408,6 +420,31 @@ export default {
     })
   },
   methods: {
+    onSubmit1(){
+      this.dialogTableVisible1 = false
+      playModeValue = 0
+      codeList= []
+      this.monitorForm.forEach(res => {
+        if(res.active && res.active != ''){
+          codeList.push(res.active)
+        }
+      })
+
+      let index = 6
+      while(index--){
+        if(index * index < codeList.length){
+          layoutNum = index + 1
+          break
+        }
+      }
+      initPlugin()
+    },
+    clearDialogSubmit1(){
+      this.dialogTableVisible1 = false
+    },
+    closeDialog1(){
+      this.dialogTableVisible1 = false
+    },
     closeDialog(){
       this.dialogTableVisible = false
     },
@@ -423,17 +460,15 @@ export default {
     async initMonitor(){
       let data = await getVideoIndexCode({partitionId: this.partitionId})
       this.codeList = data.data
-      codeList = data.data
-      let index = 6
-      while(index--){
-        if(index * index < codeList.length){
-          layoutNum = index + 1
-          break
-        }
-      }
-      console.log('撒的大');
-      
-      initPlugin()
+      // codeList = data.data
+      // let index = 6
+      // while(index--){
+      //   if(index * index < codeList.length){
+      //     layoutNum = index + 1
+      //     break
+      //   }
+      // }
+      // initPlugin()
     },
     closeWindow(callback) {
       if (oWebControl != null) {

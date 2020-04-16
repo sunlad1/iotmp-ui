@@ -158,6 +158,17 @@
     }
   }
 
+  .el-notification{
+    background: rgba(0,0,0,.8) !important;
+    border: 1px solid rgb(0, 157, 213) !important;
+    color: rgb(0, 157, 213) !important;
+    .el-notification__closeBtn{
+      color: #fff !important;
+    }
+    h2,p{
+      color: rgb(0, 157, 213) !important;
+    }
+  }
 
 </style>
 

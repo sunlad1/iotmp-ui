@@ -1,11 +1,11 @@
 <template>
   <div class="Home">
     <!-- 侧边栏 -->
-    <navMenu v-if="isShowNavMenu"></navMenu>
+    <navMenu v-if="isShowNavMenu" ref="navMenu"></navMenu>
     <!-- 顶部信息 -->
     <div class="header">
       <div class="header-left">
-        <div class="logon">智慧管廊运维平台</div>
+        <div class="logon" @click="navigateTo()">智慧管廊运维平台</div>
         <div class="menu">
           <a-menu v-model="current" mode="horizontal">
             <a-menu-item key="0"> 展示控制</a-menu-item>
@@ -174,6 +174,13 @@
       }
     },
     methods: {
+      navigateTo(){
+        this.isShowNavMenu = true
+        this.$refs.navMenu.isCollapse = false
+        this.$router.push({
+          path: '/home/welcomePage'
+        })
+      },
       handleEdit(){
         this.$router.push({
           path: '/home/warnList'
@@ -341,6 +348,7 @@
         display: flex;
         align-items: center;
         .logon {
+          cursor: pointer;
           width: 352px;
           height: 100px;
           text-indent: -999px;
