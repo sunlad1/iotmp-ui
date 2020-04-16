@@ -9,3 +9,12 @@ export const login = (obj) => {
     params: obj
   })
 }
+
+
+export const getCopyright = (obj) => {
+  return request({
+    url: '/system/getCopyright',
+    method: 'get',
+    params: obj
+  })
+}

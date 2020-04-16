@@ -374,7 +374,7 @@ export default {
         this.monitorForm = []
         this.codeList.forEach(v => {
           this.monitorForm.push({
-            list: codeList,
+            list: this.codeList,
             active: ''
           })
         })
