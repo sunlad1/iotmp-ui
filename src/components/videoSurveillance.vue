@@ -263,6 +263,7 @@ function setEncrypt(value) {
   encrypt.setPublicKey(pubKey);
   return encrypt.encrypt(value);
 }
+
 // 设置窗口控制回调
 function setCallbacks() {
   oWebControl.JS_SetWindowControlCallback({
@@ -354,6 +355,16 @@ export default {
     };
   },
   watch:{
+    'dialogTableVisible1': function(n){
+      if(n){
+        this.closeWindow()
+      }
+    },
+    'dialogTableVisible': function(n){
+      if(n){
+        this.closeWindow()
+      }
+    },
     'isCloseMonitor': function(n){
       if(n){
         // close
@@ -368,12 +379,11 @@ export default {
     'monitorType': function(n){
       if(n == 0){
         if(oWebControl){
-          console.log('oWebControl不存在');
           oWebControl.JS_RequestInterface({
               funcName: "stopAllPlayback"
           }).then(res => {
             this.dialogTableVisible1 = true
-            playModeValue = 0
+            // playModeValue = 0
             this.monitorForm = []
             this.codeList.forEach(v => {
               this.monitorForm.push({
@@ -384,7 +394,7 @@ export default {
           })
         }else{
           this.dialogTableVisible1 = true
-          playModeValue = 0
+          // playModeValue = 0
           this.monitorForm = []
           this.codeList.forEach(v => {
             this.monitorForm.push({
@@ -399,11 +409,11 @@ export default {
           oWebControl.JS_RequestInterface({
               funcName: "stopAllPreview"
           }).then(res => {
-            playModeValue = 1
+            // playModeValue = 1
             this.dialogTableVisible = true
           })
         }else{
-          playModeValue = 1
+          // playModeValue = 1
           this.dialogTableVisible = true
         }
         // this.closeWindow(() => {})
