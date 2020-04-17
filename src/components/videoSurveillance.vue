@@ -155,14 +155,13 @@ function initPlugin() {
             oWebControl
               .JS_CreateWnd("playWnd", widthGrid, heightGrid)
               .then(function() {
-                // init();
+                init();
               });
           },
           function() {}
         );
     },
     cbConnectError: function() {
-      console.log('监控调用失败');
       oWebControl = null;
       window.WebControl.JS_WakeUp("VideoWebPlugin://");
       initCount++;
@@ -229,7 +228,8 @@ function init() {
       .then(function() {
         if(playModeValue == 0){
           codeList.forEach((v,index) => {
-            previewStart(v.code,index + 1)
+            // previewStart(v.code,index + 1)
+            previewStart(v,index + 1)
           })
         }else if(playModeValue == 1){
           playBack()
@@ -435,8 +435,11 @@ export default {
           break
         }
       }
-      // initPlugin()
-      init()
+      if(oWebControl){
+        initPlugin()
+      }else{
+        init()
+      }
     },
     clearDialogSubmit1(){
       this.dialogTableVisible1 = false
@@ -454,8 +457,11 @@ export default {
       this.dialogTableVisible = false
       form = this.form
       playModeValue = 1
-      // initPlugin()
-      init()
+      if(oWebControl){
+        initPlugin()
+      }else{
+        init()
+      }
     },
     async initMonitor(){
       let data = await getVideoIndexCode({partitionId: this.partitionId})
@@ -468,7 +474,7 @@ export default {
       //     break
       //   }
       // }
-      initPlugin()
+      // initPlugin()
     },
     closeWindow(callback) {
       if (oWebControl != null) {
