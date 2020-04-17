@@ -36,7 +36,7 @@
                         <span>之前不再报警</span>
                       </div>
                       <div class="operationGrid">
-                        <el-button type="primary" size="mini" @click="confirmWarn(scope.$index,scope.row)">删除</el-button>
+                        <el-button type="primary" size="mini" @click="confirmWarn(scope.$index,scope.row)">确认</el-button>
                         <el-button size="mini" @click="cancleWarn(scope.$index)">取消</el-button>
                       </div>
                     </div>

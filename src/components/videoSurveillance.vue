@@ -83,8 +83,8 @@
       <template v-slot:middle>
         <el-form ref="form" :model="form" label-width="100px">
           <el-row :gutter="20">
-            <el-col :span="12" v-for="(el,i) in monitorForm" :key="i">
-              <el-form-item label="监控编号">
+            <el-col :span="24" v-for="(el,i) in monitorForm" :key="i">
+              <el-form-item :label="`窗口${i+1}`">
                 <el-select v-model="el.active" placeholder="请选择">
                   <el-option
                     v-for="(item,index) in el.list"
@@ -145,7 +145,6 @@ function initPlugin() {
     iServicePortEnd: 15909,
     szClassId: "23BF3B0A-2C56-4D97-9C03-0CB103AA8F11", // 用于IE10使用ActiveX的clsid
     cbConnectSuccess: function() {
-      console.log('监控调用成功');
       setCallbacks();
       oWebControl
         .JS_StartService("window", {
@@ -156,7 +155,7 @@ function initPlugin() {
             oWebControl
               .JS_CreateWnd("playWnd", widthGrid, heightGrid)
               .then(function() {
-                init();
+                // init();
               });
           },
           function() {}
@@ -264,7 +263,6 @@ function setEncrypt(value) {
   encrypt.setPublicKey(pubKey);
   return encrypt.encrypt(value);
 }
-// initPlugin();                                                                   //dsadasdsadasd
 // 设置窗口控制回调
 function setCallbacks() {
   oWebControl.JS_SetWindowControlCallback({
@@ -370,7 +368,6 @@ export default {
     'monitorType': function(n){
       if(n == 0){
         this.dialogTableVisible1 = true
-        // codeList = [...codeList,...codeList,...codeList]
         this.monitorForm = []
         this.codeList.forEach(v => {
           this.monitorForm.push({
@@ -437,7 +434,8 @@ export default {
           break
         }
       }
-      initPlugin()
+      // initPlugin()
+      init()
     },
     clearDialogSubmit1(){
       this.dialogTableVisible1 = false
@@ -455,7 +453,8 @@ export default {
       this.dialogTableVisible = false
       form = this.form
       playModeValue = 1
-      initPlugin()
+      // initPlugin()
+      init()
     },
     async initMonitor(){
       let data = await getVideoIndexCode({partitionId: this.partitionId})
