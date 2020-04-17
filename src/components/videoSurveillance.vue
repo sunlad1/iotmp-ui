@@ -155,7 +155,7 @@ function initPlugin() {
             oWebControl
               .JS_CreateWnd("playWnd", widthGrid, heightGrid)
               .then(function() {
-                init();
+                // init();
               });
           },
           function() {}
