@@ -368,6 +368,7 @@ export default {
     'monitorType': function(n){
       if(n == 0){
         if(oWebControl){
+          console.log('oWebControl不存在');
           oWebControl.JS_RequestInterface({
               funcName: "stopAllPlayback"
           }).then(res => {
@@ -392,19 +393,6 @@ export default {
             })
           })
         }
-          oWebControl.JS_RequestInterface({
-              funcName: "stopAllPlayback"
-          }).then(res => {
-            this.dialogTableVisible1 = true
-            playModeValue = 0
-            this.monitorForm = []
-            this.codeList.forEach(v => {
-              this.monitorForm.push({
-                list: this.codeList,
-                active: ''
-              })
-            })
-          })
         // this.closeWindow(() => {})
       }else if(n == 1){
         if(oWebControl){
@@ -466,6 +454,7 @@ export default {
         }
       }
       if(oWebControl){
+        console.log('oWebControl 不存在');
         initPlugin()
       }else{
         init()
