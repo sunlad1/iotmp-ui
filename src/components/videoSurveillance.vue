@@ -367,9 +367,21 @@ export default {
     },
     'monitorType': function(n){
       if(n == 0){
-        oWebControl.JS_RequestInterface({
-            funcName: "stopAllPlayback"
-        }).then(res => {
+        if(oWebControl){
+          oWebControl.JS_RequestInterface({
+              funcName: "stopAllPlayback"
+          }).then(res => {
+            this.dialogTableVisible1 = true
+            playModeValue = 0
+            this.monitorForm = []
+            this.codeList.forEach(v => {
+              this.monitorForm.push({
+                list: this.codeList,
+                active: ''
+              })
+            })
+          })
+        }else{
           this.dialogTableVisible1 = true
           playModeValue = 0
           this.monitorForm = []
@@ -379,15 +391,33 @@ export default {
               active: ''
             })
           })
-        })
+        }
+          oWebControl.JS_RequestInterface({
+              funcName: "stopAllPlayback"
+          }).then(res => {
+            this.dialogTableVisible1 = true
+            playModeValue = 0
+            this.monitorForm = []
+            this.codeList.forEach(v => {
+              this.monitorForm.push({
+                list: this.codeList,
+                active: ''
+              })
+            })
+          })
         // this.closeWindow(() => {})
       }else if(n == 1){
-        oWebControl.JS_RequestInterface({
-            funcName: "stopAllPreview"
-        }).then(res => {
+        if(oWebControl){
+          oWebControl.JS_RequestInterface({
+              funcName: "stopAllPreview"
+          }).then(res => {
+            playModeValue = 1
+            this.dialogTableVisible = true
+          })
+        }else{
           playModeValue = 1
           this.dialogTableVisible = true
-        })
+        }
         // this.closeWindow(() => {})
       }
     }
