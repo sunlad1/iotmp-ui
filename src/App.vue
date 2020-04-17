@@ -170,7 +170,7 @@
     }
   }
 
-  .el-table td{
+  .el-table td, .el-table th{
     padding:5px 0 !important;
   }
 

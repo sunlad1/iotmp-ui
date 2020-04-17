@@ -472,18 +472,22 @@ export default {
     clearDialogSubmit1(){
       this.dialogTableVisible1 = false
       playModeValue = null
+      this.monitorType = null
     },
     closeDialog1(){
       this.dialogTableVisible1 = false
       playModeValue = null
+      this.monitorType = null
     },
     closeDialog(){
       this.dialogTableVisible = false
       playModeValue = null
+      this.monitorType = null
     },
     clearDialogSubmit(){
       this.dialogTableVisible = false
       playModeValue = null
+      this.monitorType = null
     },
     onSubmit(){
       this.dialogTableVisible = false
