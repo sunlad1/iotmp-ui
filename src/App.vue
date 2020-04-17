@@ -170,5 +170,9 @@
     }
   }
 
+  .el-table td{
+    padding:5px 0 !important;
+  }
+
 </style>
 

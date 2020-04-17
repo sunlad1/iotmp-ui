@@ -471,15 +471,19 @@ export default {
     },
     clearDialogSubmit1(){
       this.dialogTableVisible1 = false
+      playModeValue = null
     },
     closeDialog1(){
       this.dialogTableVisible1 = false
+      playModeValue = null
     },
     closeDialog(){
       this.dialogTableVisible = false
+      playModeValue = null
     },
     clearDialogSubmit(){
       this.dialogTableVisible = false
+      playModeValue = null
     },
     onSubmit(){
       this.dialogTableVisible = false
