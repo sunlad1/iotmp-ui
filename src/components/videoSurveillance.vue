@@ -114,7 +114,7 @@ var initCount = 0;
 var pubKey = "";
 var widthGrid = 0;
 var heightGrid = 0;
-var playModeValue = 0;  //0 预览 1 回放
+var playModeValue = 3;  //0 预览 1 回放
 var layoutNum = 2;
 var codeList = []
 var form = {}
@@ -155,7 +155,7 @@ function initPlugin() {
             oWebControl
               .JS_CreateWnd("playWnd", widthGrid, heightGrid)
               .then(function() {
-                // init();
+                init();
               });
           },
           function() {}
@@ -367,27 +367,28 @@ export default {
     },
     'monitorType': function(n){
       if(n == 0){
-        this.dialogTableVisible1 = true
-        this.monitorForm = []
-        this.codeList.forEach(v => {
-          this.monitorForm.push({
-            list: this.codeList,
-            active: ''
-          })
-        })
         oWebControl.JS_RequestInterface({
             funcName: "stopAllPlayback"
+        }).then(res => {
+          this.dialogTableVisible1 = true
+          playModeValue = 0
+          this.monitorForm = []
+          this.codeList.forEach(v => {
+            this.monitorForm.push({
+              list: this.codeList,
+              active: ''
+            })
+          })
         })
-
-        playModeValue = 0
-        this.closeWindow(() => {})
+        // this.closeWindow(() => {})
       }else if(n == 1){
-        this.dialogTableVisible = true
         oWebControl.JS_RequestInterface({
             funcName: "stopAllPreview"
-        });
-        playModeValue = 1
-        this.closeWindow(() => {})
+        }).then(res => {
+          playModeValue = 1
+          this.dialogTableVisible = true
+        })
+        // this.closeWindow(() => {})
       }
     }
   },
@@ -467,7 +468,7 @@ export default {
       //     break
       //   }
       // }
-      // initPlugin()
+      initPlugin()
     },
     closeWindow(callback) {
       if (oWebControl != null) {
