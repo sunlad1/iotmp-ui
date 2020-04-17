@@ -453,8 +453,7 @@ export default {
           break
         }
       }
-      if(oWebControl){
-        console.log('oWebControl 不存在');
+      if(oWebControl || oWebControl == null){
         initPlugin()
       }else{
         init()
@@ -476,7 +475,7 @@ export default {
       this.dialogTableVisible = false
       form = this.form
       playModeValue = 1
-      if(oWebControl){
+      if(oWebControl || oWebControl == null){
         initPlugin()
       }else{
         init()
