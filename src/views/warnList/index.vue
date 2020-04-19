@@ -4,9 +4,9 @@
       <div class="inGrid">
         <div class="titleGrid" id="monitorGrid">
           <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
-          <p>实时告警列表</p>
+          <p class="subheading">实时告警列表</p>
         </div>
-        <div class="dataGrid" id="dataHeight">
+        <div class="dataGrid" id="dataHeight" style="padding: 0 .23rem;">
           <el-table :height="tableHeight" :data="alarmList" style="width: 100%">
             <el-table-column prop="alarmDeviceName" label="报警名称"></el-table-column>
             <el-table-column prop="alarmSource" label="报警源"></el-table-column>
@@ -69,10 +69,10 @@
       <div class="inGrid">
         <div class="titleGrid" id="monitorGrid">
           <img src="/static/imgs/warnList/setIcon.png" alt />
-          <p style="margin-right:auto;">报警设置</p>
+          <p class="subheading" style="margin-right:auto;">报警设置</p>
           <el-button type="primary" round size="mini" @click="upalarmEvents">修改</el-button>
         </div>
-        <div class="dataGrid">
+        <div class="dataGrid" style="padding-top:10px">
           <el-timeline>
             <el-timeline-item
               v-for="(activity, index) in activities"
@@ -115,7 +115,7 @@
       <div class="inGrid">
         <div class="titleGrid" id="monitorGrid">
           <img src="/static/imgs/warnList/timesIcon.png" alt />
-          <p style="margin-right:auto">历史报警信息</p>
+          <p class="subheading" style="margin-right:auto">历史报警信息</p>
           <el-cascader
             placeholder="请选择设备类型"
             v-model="cascaderValue"
@@ -136,7 +136,7 @@
           <el-button type="primary" size="mini" @click="searchClicked">查询</el-button>         
           <el-button type="info" plain size="mini" @click="clearSearch">重置</el-button>         
         </div>
-        <div class="dataGrid" id="historyDataHeight">
+        <div class="dataGrid" id="historyDataHeight" style="padding: 0 .23rem;">
           <el-table :height="historyTableHeight" :data="historyAlarmList" style="width: 100%">
             <el-table-column prop="deviceName" label="报警设备"></el-table-column>
             <el-table-column prop="deviceArea" label="所属区域"></el-table-column>
@@ -192,7 +192,7 @@
           <el-input
             type="textarea"
             :rows="2"
-            placeholder="请输入内容"
+            placeholder="请输入100字以内的描述"
             v-model="textarea">
           </el-input>
           <span slot="footer" class="dialog-footer">
@@ -200,8 +200,6 @@
             <el-button type="primary" @click="confirmRecord">确 定</el-button>
           </span>
       </el-dialog>
-
-
   </div>
 </template>
 
@@ -518,6 +516,16 @@ export default {
 </script>
 
 <style lang="less">
+.el-dialog{
+  background: rgba(0,0,0,.8);
+  textarea{
+    background: rgba(16, 9, 100, .5);
+    color: #00C3FF;
+  }
+}
+.el-dialog__title{
+  color: #00C3FF;
+}
 .el-popper[x-placement^=left] .popper__arrow::after{
   background: transparent !important;
 }

@@ -3,7 +3,7 @@
     <div class="environmentControl" style="padding-left: .13rem;">
       <div class="leftComtop">
         <img src="/static/imgs/home_icon2.png" alt />
-        <p class="mainTitle" style="margin-right: auto">环控仪表</p>
+        <p class="mainTitle subheading" style="margin-right: auto">环控仪表</p>
         <div style="width: 120px">
           <el-select v-model="groupVal" placeholder="请选择" size="mini">
             <el-option
@@ -48,7 +48,7 @@
     <div class="equipmentWarn">
       <div class="leftComtop">
         <img src="/static/imgs/home_icon1.png" alt />
-        <p class="mainTitle">设备告警列表</p>
+        <p class="mainTitle subheading">设备告警列表</p>
       </div>
       <div class="botttom" style="    flex: 1;overflow:auto;">
         <el-table height="100%" :data="alarmList" style="width: 100%">

@@ -17,10 +17,10 @@ export default {
 .welcomContainer {
   width: 100vw;
   height: 100vh;
-  background-image: url(/static/imgs/loginPage/loginBk.png);
+  background-image: url(/static/imgs/loginPage/welcomeBk.png);
   background-size: 100% 100%;
 	background-repeat: no-repeat;
-	margin-left: 225px;
+	padding-left: 225px;
 	.textgrid{
 		display: flex;
 		flex-direction: column;

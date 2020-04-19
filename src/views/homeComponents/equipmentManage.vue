@@ -2,7 +2,7 @@
   <div class="equipmentWarn">
     <div class="top">
       <img src="/static/imgs/home_icon3.png" alt="">
-      <p style="margin-right: auto;">设备运行状态及管理</p>
+      <p class="subheading" style="margin-right: auto;">设备运行状态及管理</p>
       <div>
         <el-checkbox-group v-model="checkList">
           <el-checkbox :label="item.groupName" v-for="(item,index) in typeList" :key="index"></el-checkbox>

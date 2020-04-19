@@ -51,7 +51,7 @@
         <div class="inGrid">
           <div class="titleGrid" id="monitorGrid">
             <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
-            <p style="margin-right: auto;">{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
+            <p class="subheading" style="margin-right: auto;">{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
             <div class="searchWrapper">
               <p>设备采集起止时间</p>
               <el-date-picker
@@ -86,6 +86,7 @@
         <div class="titleGrid">
           <img src="/static/imgs/dataMonitor/historyIcon.png" alt />
           <p
+          class="subheading"
             style="margin-right:auto;"
           >{{ filterArr1.length > 0 && filterArr1[Number(activeIndex1)].groupName }}#{{ filterArr2.length > 0 && filterArr2[Number(activeIndex2)].deviceName }}历史数据</p>
           <div>
@@ -407,13 +408,14 @@ export default {
             show: true,
             lineStyle: {
                 // 使用深浅的间隔色
-                color: '#5FC8E1'
+              color: 'rgba(95,200,225,.5)'
             }
           },
           axisLine:{
               show: false,
               lineStyle:{
-                  color:'#5FC8E1' //transparent
+                color: 'rgba(95,200,225,.5)'
+                  // color:'#5FC8E1' //transparent
               }
           }
         },

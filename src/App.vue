@@ -174,5 +174,28 @@
     padding:5px 0 !important;
   }
 
+  .subheading{
+    color: #00a0d8;
+    font-size: .1417rem !important;
+  }
+  .ant-menu-item{
+    font-size: .1417rem !important;
+  }
+
+  .el-table td{
+    border-bottom:1px solid rgba(109, 114, 169, 1) !important;
+  }
+  .el-cascader__dropdown{
+    border: 1px solid #00C3FF !important;
+  }
+  .el-cascader-panel{
+    background: rgba(0,0,0);
+    li:hover{
+      background: rgba(0, 255, 255, 0.1) !important;
+    }
+    .el-cascader-node{
+      color: #fff;
+    }
+  }
 </style>
 

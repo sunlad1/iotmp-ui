@@ -4,7 +4,7 @@
       <div class="inGrid">
         <div class="titleGrid" id="monitorGrid">
           <img src="/static/imgs/operationManage/operationIcon.png" alt />
-          <p style="margin-right:auto">资产列表</p>
+          <p class="subheading" style="margin-right:auto">资产列表</p>
           <div class="searchWrapper">
             <p>设备类型</p>
             <el-input v-model="valueTime" placeholder="请输入"></el-input>

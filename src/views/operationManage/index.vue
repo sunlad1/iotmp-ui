@@ -4,7 +4,7 @@
       <div class="inGrid">
         <div class="titleGrid" id="monitorGrid">
           <img src="/static/imgs/operationManage/operationIcon.png" alt />
-          <p style="margin-right:auto">历史报警信息</p>
+          <p class="subheading" style="margin-right:auto">历史报警信息</p>
           <div class="searchWrapper">
             <p>巡检时间</p>
             <el-date-picker

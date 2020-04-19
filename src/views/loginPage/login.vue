@@ -1,7 +1,10 @@
 <template>
   <div class="loginContainer">
     <div class="formWrapper">
-      <p class="title">智慧管廊运维平台</p>
+      <p class="title">
+        <img src="/static/imgs/loginPage/logo.png" alt="">
+        <span>智慧管廊运维平台</span>
+      </p>
       <el-input placeholder="请输入内容" prefix-icon="el-icon-user" v-model="userName"></el-input>
       <el-input placeholder="请输入内容" type="password" prefix-icon="el-icon-lock" v-model="password"></el-input>
       <button class="submit" @click="submit()">登录</button>
@@ -81,6 +84,9 @@ export default {
     }
   }
   .formWrapper {
+    background-image: url(/static/imgs/loginPage/formBk.png);
+    background-size: 100% 100%;
+    padding: .50rem .8rem;
     margin-right: 1.8rem;
     .title {
       font-size: 0.25rem;
@@ -90,6 +96,10 @@ export default {
       color: transparent;
       margin-bottom: 0.36rem;
       text-align: center;
+      img{
+        width: .49rem;
+        margin-right: .1rem;
+      }
     }
     .el-input__icon {
       height: auto;
