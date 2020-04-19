@@ -373,7 +373,8 @@ export default {
         //     funcName: "stopAllPreview"
         // });
       }else{
-        initPlugin()
+        // initPlugin()
+        this.monitorType = null
       }
     },
     'monitorType': function(n){
