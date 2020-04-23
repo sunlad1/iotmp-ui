@@ -24,3 +24,5 @@ yarn lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### https://github.com/sunlad1/iotmp-ui
+
+### 加入actions
