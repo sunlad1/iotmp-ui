@@ -8,7 +8,7 @@ module.exports = {
     port: 1888,
     proxy: {
       '/': {
-        target: 'http://39.99.132.48:10098', // 公网ip
+        target: 'http://39.99.132.48:10097', // 公网ip
         // target: 'http://127.0.0.1:8111', // 公网ip
         ws: true
       }

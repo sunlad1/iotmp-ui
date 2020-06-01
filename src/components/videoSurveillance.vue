@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">
         <div class="ico"></div>
-        <span style="display:inline-block;margin-right:auto">视屏监控</span>
+        <span style="display:inline-block;margin-right:auto">视频监控</span>
         <el-radio-group v-model="monitorType">
           <el-radio :label="0">预览</el-radio>
           <el-radio :label="1">回放</el-radio>

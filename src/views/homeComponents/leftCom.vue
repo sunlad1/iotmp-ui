@@ -195,6 +195,9 @@ export default {
       });
     },
     setMeterData(deviceId) {
+      console.log('deviceId')
+      console.log(deviceId)
+      console.log(websoketURL)
       if (this.wsLeftArr[1]) {
         this.wsLeftArr[1].close(1000);
       }

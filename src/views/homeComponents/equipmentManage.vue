@@ -22,15 +22,17 @@
                 <el-table-column
                   prop="deviceName"
                   label="设备名称"
+                  width="85"
                 >
                 </el-table-column>
                 <el-table-column
+                  min-width="100"
                   prop="deviceValue"
                   label="状态"
-                  width="60px"
+                  width="100"
                 >
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column width="130" label="操作">
                   <template slot-scope="scope">
                     <div class="operrateGrid">
                       <div v-for="(el,index) in scope.row.deviceOperateList" :key="index">
@@ -344,7 +346,7 @@ export default {
   }
   .tableGrid{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-column-gap: 20px;
     max-width: 100%;
     .tableItem{
