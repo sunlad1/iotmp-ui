@@ -289,6 +289,7 @@ export default {
   flex-direction: column;
   .operrateGrid{
     display: flex;
+    flex-wrap: wrap;
     // & div:nth-last-child(1) span:nth-last-child(1){
     & div:nth-last-child(1) .bar{
       color: transparent !important;
@@ -335,6 +336,8 @@ export default {
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .el-table  .cell:nth-last-child(1){
