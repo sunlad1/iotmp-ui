@@ -144,14 +144,18 @@ import { getPartitionList } from '@/api/home'
   width: 200px;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 100px;
   height: 100vh;
   z-index: 9999;
-  padding-top: 100px;
+  height: calc(~'100vh - 100px') !important;
+  .el-menu{
+    max-height: 100%;
+    overflow: auto;
+  }
   .control{
     position: absolute;
     right: -25px;
-    top: 100px;
+    top: 0;
     bottom: 0;
     width: 25px;
     height: 100vh;
