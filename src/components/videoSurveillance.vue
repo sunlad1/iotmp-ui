@@ -355,6 +355,10 @@ export default {
     };
   },
   watch:{
+    'partitionId': async function(n, o){
+      let data = await getVideoIndexCode({partitionId: this.partitionId})
+      this.codeList = data.data
+    },
     'dialogTableVisible1': function(n){
       if(n){
         this.closeWindow()
@@ -503,15 +507,6 @@ export default {
     async initMonitor(){
       let data = await getVideoIndexCode({partitionId: this.partitionId})
       this.codeList = data.data
-      // codeList = data.data
-      // let index = 6
-      // while(index--){
-      //   if(index * index < codeList.length){
-      //     layoutNum = index + 1
-      //     break
-      //   }
-      // }
-      // initPlugin()
     },
     closeWindow(callback) {
       if (oWebControl != null) {
