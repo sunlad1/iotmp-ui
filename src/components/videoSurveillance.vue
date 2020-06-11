@@ -358,6 +358,9 @@ export default {
     'partitionId': async function(n, o){
       let data = await getVideoIndexCode({partitionId: this.partitionId})
       this.codeList = data.data
+      // 关闭预览
+      this.closeWindow()
+      this.monitorType = null
     },
     'dialogTableVisible1': function(n){
       if(n){
@@ -390,10 +393,10 @@ export default {
             this.dialogTableVisible1 = true
             // playModeValue = 0
             this.monitorForm = []
-            this.codeList.forEach(v => {
+            this.codeList.forEach((v,index) => {
               this.monitorForm.push({
                 list: this.codeList,
-                active: ''
+                active: this.codeList[index].code
               })
             })
           })
@@ -401,10 +404,10 @@ export default {
           this.dialogTableVisible1 = true
           // playModeValue = 0
           this.monitorForm = []
-          this.codeList.forEach(v => {
+          this.codeList.forEach((v,index) => {
             this.monitorForm.push({
               list: this.codeList,
-              active: ''
+              active: this.codeList[index].code
             })
           })
         }
