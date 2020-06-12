@@ -11,9 +11,10 @@
     </div>
     <div class="tabelWrapper" id="tabelWrapper_eq">
       <div class="tableGrid">
-        <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
+        <div class="tableItem" v-show="typeList[index] && typeList[index].isShow" v-for="(item,index) in totalData" :key="index">
+        <!-- <div class="tableItem" v-show="typeList[index].isShow" v-for="(item,index) in totalData" :key="index"> -->
           <div class="botttom">
-            <p class="equipmentTitle">{{ typeList[index].groupName }}</p>
+            <p class="equipmentTitle">{{ typeList[index] && typeList[index].groupName }}</p>
             <div class="equipmentGrid">
               <el-table
                 :data="totalData[index]"
@@ -243,12 +244,14 @@ export default {
       let arr = await getOperateDeviceTypes({partitionId: this.partitionId})
       if(arr.data instanceof Array && arr.data.length > 0){
         this.typeList = arr.data
+        console.log(JSON.parse(JSON.stringify(this.typeList)))
         this.typeList.map( (v)=>{
-          v.isShow = true
+          if(v){
+            v.isShow = true
+          }
         })
         this.checkList = this.typeList.map( v => v.groupName)
         this.initList()
-        console.log('have data');
       }else{
         // 如果拿到的是空数据 就直接清空所有监控
         this.closeAllWs()
