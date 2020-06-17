@@ -4,7 +4,20 @@
       <div class="fullWrapper">
         <div class="addDialog">
           <div class="closeBtn" @click="closeDialog"></div>
-          <p class="title">防火分区1#分组列表</p>
+          <div class="title">
+            <p v-if="levelArr.length == 1">
+              <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }}</span>
+            </p>
+            <p v-if="levelArr.length == 2">
+              <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }} > </span>
+              <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }}</span>
+            </p>
+            <p v-if="levelArr.length == 3">
+              <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].partitionName }} > </span>
+              <span class="normalWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].partitionName }} > </span>
+              <span class="hignLightWord">{{ partitionedList[levelArr[0]] && partitionedList[levelArr[0]].childPartition[levelArr[1]].childPartition[levelArr[2]].partitionName }}</span>
+            </p>
+          </div>
           <el-carousel
             trigger="click"
             height="4.2rem"
@@ -65,11 +78,13 @@
 
 <script>
 import { websoketURL } from "@/config/env";
+import { mapGetters } from 'vuex';
 
 export default {
   name: "monitorList",
   data() {
     return {
+      levelArr: [],
       meterLevelObj: {},
       wsLeftArr: [
         [{}, {}, {}, {}],
@@ -97,6 +112,9 @@ export default {
       totalList: []
     };
   },
+  computed: {
+    ...mapGetters(['currentPartitionLevel', 'partitionedList'])
+  },
   props: {
     options: {
       type: Array
@@ -106,6 +124,14 @@ export default {
     }
   },
   watch: {
+    'currentPartitionLevel':{
+      handler: function(n){
+        let arr = n.split('-')
+        arr = arr.map( v => Number(v))
+        this.levelArr = arr
+      },
+      immediate: true
+    },
     options: {
       handler: function() {
         // 每次options改变时 就开始整理totalList的数据格式
