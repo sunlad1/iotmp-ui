@@ -2,24 +2,23 @@ import {
   SET_PARTITIONID,
   SET_PARTITION_LIST,
   SET_CURRENT_PARTITION_LEVEL,
-  SET_USER_INFO
+  SET_USER_INFO,
+  SET_DESIGN_IMG_URL
 } from '../types'
-
-
-console.log(localStorage.getItem('userInfo'));
-console.log(typeof localStorage.getItem('userInfo'));
 
 const state = {
   partitionId: '',   // 当前分区id
   partitionedList: [], // 分区数据数组
   currentPartitionLevel: '', // 当前分区的层级
-  userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}')
+  userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
+  designImgUrl: ''
 }
 
 const mutations = {
+  [SET_DESIGN_IMG_URL] (state, val) {
+    state.designImgUrl = val
+  },
   [SET_CURRENT_PARTITION_LEVEL] (state, val) {
-    console.log('val');
-    console.log(val);
     state.currentPartitionLevel = val
   },
   [SET_PARTITIONID] (state, val) {
@@ -34,6 +33,9 @@ const mutations = {
 }
 
 const actions = {
+  setDesignImg({commit}, val){
+    commit('SET_DESIGN_IMG_URL', val)
+  },
   setUserInfo({commit}, val){
     commit('SET_USER_INFO', val)
     localStorage.setItem('userInfo',JSON.stringify(val))
@@ -50,6 +52,9 @@ const actions = {
 }
 
 const getters = {
+  getDesignImg(state){
+    return state.designImgUrl
+  },
   getUserInfo(state){
     return state.userInfo
   },

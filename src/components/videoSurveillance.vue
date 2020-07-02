@@ -7,6 +7,7 @@
         <el-radio-group v-model="monitorType">
           <el-radio :label="0">预览</el-radio>
           <el-radio :label="1">回放</el-radio>
+          <el-radio :label="2">设备图纸</el-radio>
         </el-radio-group>
       </div>
       <!-- <div class="select">
@@ -26,7 +27,9 @@
     <!-- <div class="content" id="playWnd" ></div> -->
     <!-- <div class="content contentContainer"></div> -->
     <div class="around">
-      <div class="contentContainer"></div>
+      <div class="contentContainer">
+        <img v-if="monitorType === 2" :src="designImgUrl" alt="详细图纸">
+      </div>
     </div>
 
     <dialogBox 
@@ -425,6 +428,10 @@ export default {
           this.dialogTableVisible = true
         }
         // this.closeWindow(() => {})
+      }else if(n == 2){
+        // this.designImgUrl
+        console.log('this.designImgUrl')
+        console.log(this.designImgUrl)
       }
     }
   },
@@ -435,7 +442,7 @@ export default {
     // });
   },
   computed:{
-      ...mapGetters(['userInfo','partitionId']),
+      ...mapGetters(['userInfo','partitionId', 'designImgUrl']),
   },
   mounted() {
     let timer = null   //video-surveillance
@@ -617,6 +624,10 @@ export default {
     // flex: 1;
     overflow: hidden;
     margin: 0 auto;
+    img{
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

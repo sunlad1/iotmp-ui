@@ -77,17 +77,20 @@ import { getPartitionList } from '@/api/home'
             // 初始化当前选择的分区层级
             this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].childPartition[0].id)
+            this.$store.dispatch('setDesignImg', this.menuList[0].childPartition[0].childPartition[0].designImgUrl)
           }else{
             this.activeIndex = '0-0'
             // 初始化当前选择的分区层级
             this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
             this.$store.dispatch('setPartitionId', this.menuList[0].childPartition[0].id)
+            this.$store.dispatch('setDesignImg', this.menuList[0].childPartition[0].designImgUrl)
           }
         }else{
           this.activeIndex = '0'
           // 初始化当前选择的分区层级
           this.$store.dispatch('setCurrentPartitionLevel', this.activeIndex)
           this.$store.dispatch('setPartitionId', this.menuList[0].id)
+          this.$store.dispatch('setDesignImg', this.menuList[0].designImgUrl)
         }
       })
     },
@@ -95,6 +98,7 @@ import { getPartitionList } from '@/api/home'
       changePartition(obj,level){
         if(obj.id){
           this.$store.dispatch('setPartitionId', obj.id)
+          this.$store.dispatch('setDesignImg', obj.designImgUrl)
           this.$store.dispatch('setCurrentPartitionLevel', level)
         }
       },
