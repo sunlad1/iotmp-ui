@@ -28,7 +28,13 @@
     <!-- <div class="content contentContainer"></div> -->
     <div class="around">
       <div class="contentContainer">
-        <img v-if="monitorType === 2" :src="designImgUrl" alt="详细图纸">
+        <el-image 
+          v-if="monitorType === 2"
+          style="width: 100%; height: 100%"
+          :src="designImgUrl"
+          :preview-src-list="[designImgUrl]">
+        </el-image>
+        <!-- <img v-if="monitorType === 2" :src="designImgUrl" alt="详细图纸"> -->
       </div>
     </div>
 
@@ -346,7 +352,7 @@ export default {
       monitorForm:[],
       dialogTableVisible1: false,
       dialogTableVisible: false,
-      monitorType: null,
+      monitorType: 2,
       selectData: [{}],
       current: [0],
       codeList: [],
@@ -363,7 +369,7 @@ export default {
       this.codeList = data.data
       // 关闭预览
       this.closeWindow()
-      this.monitorType = null
+      this.monitorType = 2
     },
     'dialogTableVisible1': function(n){
       if(n){
@@ -384,7 +390,7 @@ export default {
         // });
       }else{
         // initPlugin()
-        this.monitorType = null
+        this.monitorType = 2
       }
     },
     'monitorType': function(n){
@@ -487,22 +493,22 @@ export default {
     clearDialogSubmit1(){
       this.dialogTableVisible1 = false
       playModeValue = null
-      this.monitorType = null
+      this.monitorType = 2
     },
     closeDialog1(){
       this.dialogTableVisible1 = false
       playModeValue = null
-      this.monitorType = null
+      this.monitorType = 2
     },
     closeDialog(){
       this.dialogTableVisible = false
       playModeValue = null
-      this.monitorType = null
+      this.monitorType = 2
     },
     clearDialogSubmit(){
       this.dialogTableVisible = false
       playModeValue = null
-      this.monitorType = null
+      this.monitorType = 2
     },
     onSubmit(){
       this.dialogTableVisible = false
@@ -546,6 +552,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
+.el-image-viewer__wrapper{
+  z-index: 999999 !important;
+}
 .video-surveillance {
   width: 100%;
   max-width: 100%;
