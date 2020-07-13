@@ -7,7 +7,7 @@
         <el-radio-group v-model="monitorType">
           <el-radio :label="0">预览</el-radio>
           <el-radio :label="1">回放</el-radio>
-          <el-radio :label="2">设备图纸</el-radio>
+          <el-radio :label="2">平面示意图</el-radio>
         </el-radio-group>
       </div>
       <!-- <div class="select">
